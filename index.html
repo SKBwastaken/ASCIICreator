@@ -1049,10 +1049,13 @@
             padding: 9px 13px;
         }
 
-        .changelog-item-icon {
-            font-size: 1.02rem;
-            line-height: 1;
-            margin-top: 1px;
+        .changelog-bullet {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 7px var(--accent-glow);
+            margin-top: 6px;
             flex-shrink: 0;
         }
 
@@ -1697,59 +1700,59 @@
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🎬</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
-                                        <span class="changelog-item-title">Video & GIF Support</span>
-                                        <span class="changelog-item-desc">MP4, WebM, MOV und animierte GIFs per Drag & Drop laden und in Echtzeit flüssig als ASCII abspielen.</span>
+                                        <span class="changelog-item-title">Video & GIF Playback Engine</span>
+                                        <span class="changelog-item-desc">Load and play MP4, WebM, MOV, and animated GIFs in real time as high-performance ASCII art via drag and drop.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">⚡</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Offline MP4 Video Export (High Quality)</span>
-                                        <span class="changelog-item-desc">Videos und GIFs direkt im Browser mit bis zu 75 Mbps Ultra-Bitrate Frame-für-Frame als MP4 (H.264) exportieren — ganz ohne Playback-Recording.</span>
+                                        <span class="changelog-item-desc">Render and export ASCII videos and GIFs frame-by-frame as MP4 (H.264) with up to 75 Mbps ultra bitrate — without playback recording.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🖼️</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Export Current Frame as PNG</span>
-                                        <span class="changelog-item-desc">Bei geladenem Video/GIF kann jedes einzelne pausierte Frame direkt in voller Auflösung (bis zu 8K) als PNG exportiert werden.</span>
+                                        <span class="changelog-item-desc">Export any paused video or animated GIF frame directly in full resolution (up to 8K) as a PNG image.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">⏩</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Timeline Controls & Frame Scrubbing</span>
-                                        <span class="changelog-item-desc">Interaktive Seekbar mit Zeitstempel, Play/Pause, Loop, Mute und präzisem Frame-by-Frame Scrubbing per Mausrad.</span>
+                                        <span class="changelog-item-desc">Interactive seekbar with timestamp display, play/pause, loop, mute, and precise frame-by-frame mouse wheel scrubbing.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🛡️</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Zero-Flicker & Smooth Seeking</span>
-                                        <span class="changelog-item-desc">Optimierte Seeking-Queue und Freeze-Frame Retention verhindern Black Screens und Decoder-Lags beim Durchschalten von Frames.</span>
+                                        <span class="changelog-item-desc">Intelligent seek queue and freeze-frame retention prevent black screen flickering and decoder stutter while scrubbing.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🖥️</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Export Resolution Dropdown</span>
-                                        <span class="changelog-item-desc">Schnelle Voreinstellung für Full HD (1080p), 4K UHD (2160p – Standard) und 8K UHD (4320p).</span>
+                                        <span class="changelog-item-desc">Convenient resolution presets for Full HD (1080p), 4K UHD (2160p - Default), and 8K UHD (4320p).</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🎛️</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Flexible Sidebar (Left / Right)</span>
-                                        <span class="changelog-item-desc">Die Werkzeugleiste kann flexibel auf die linke oder rechte Bildschirmseite verschoben werden (Einstellung bleibt gespeichert).</span>
+                                        <span class="changelog-item-desc">Dock the control sidebar to either the left or right side of your screen with persistent preference storage.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🎨</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
-                                        <span class="changelog-item-title">Neuer Look (#4788ff) & Dynamische Updates</span>
-                                        <span class="changelog-item-desc">Frisches Farbschema mit modernem Glow und interaktiver „(last update [x ago])“-Anzeige im Header.</span>
+                                        <span class="changelog-item-title">Refreshed Visual Design & Dynamic Updates</span>
+                                        <span class="changelog-item-desc">Sleek #4788ff accent theme with refined glow effects and an interactive "(last update [x ago])" indicator in the header.</span>
                                     </div>
                                 </div>
                             </div>
@@ -1764,17 +1767,17 @@
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">💾</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Custom User Presets</span>
-                                        <span class="changelog-item-desc">Eigene Schieberegler- und Farb-Einstellungen dauerhaft im Browser speichern, laden und verwalten.</span>
+                                        <span class="changelog-item-desc">Save, load, and manage your personalized slider and palette configurations locally in your browser.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🔍</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Cursor-Centered Zoom & Pan</span>
-                                        <span class="changelog-item-desc">Stufenloses Zoomen zentriert auf den Mauszeiger und freies Verschieben des Canvas per Mausdrag.</span>
+                                        <span class="changelog-item-desc">Seamless zooming centered on the mouse cursor with intuitive canvas click-and-drag panning.</span>
                                     </div>
                                 </div>
                             </div>
@@ -1789,17 +1792,17 @@
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🌈</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
-                                        <span class="changelog-item-title">Retro & Modern Farbpaletten</span>
-                                        <span class="changelog-item-desc">Original Solid/Average, Monochrom, Matrix, Cyberpunk, CGA und ZX Spectrum.</span>
+                                        <span class="changelog-item-title">Retro & Modern Color Palettes</span>
+                                        <span class="changelog-item-desc">Original Solid & Average colors, Monochrome, Matrix, Cyberpunk, CGA, and ZX Spectrum color palettes.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
-                                    <span class="changelog-item-icon">🔠</span>
+                                    <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
-                                        <span class="changelog-item-title">Random Character Mode & Fill Shadows</span>
-                                        <span class="changelog-item-desc">Zufällige Zeichenverteilung und Option zum Füllen dunkler Bereiche ohne Leerzeichen.</span>
+                                        <span class="changelog-item-title">Random Character Mode & Dark Fill</span>
+                                        <span class="changelog-item-desc">Randomized character distribution and options to fill dark shadow areas without blank spaces.</span>
                                     </div>
                                 </div>
                             </div>
@@ -1807,8 +1810,8 @@
                     </div>
 
                     <div class="changelog-footer">
-                        <span class="changelog-footer-note">Wird nach jedem neuen Update automatisch einmal angezeigt</span>
-                        <button class="changelog-btn-confirm" id="btnConfirmChangelog">Verstanden</button>
+                        <span class="changelog-footer-note">Opens automatically once after each new update</span>
+                        <button class="changelog-btn-confirm" id="btnConfirmChangelog">Got it</button>
                     </div>
                 </div>
             </div>
@@ -2585,9 +2588,9 @@
             if (name) {
                 const available = isFontAvailable(name);
                 if (available) {
-                    if (customFontFeedback) customFontFeedback.innerHTML = `<span style="color: #4ade80;">✓ Font "${name}" found in Windows</span>`;
+                    if (customFontFeedback) customFontFeedback.innerHTML = `<span style="color: #4ade80;">Font "${name}" found in system</span>`;
                 } else {
-                    if (customFontFeedback) customFontFeedback.innerHTML = `<span style="color: #f87171;">⚠ Not found in system. Tip: Use "Font File (.ttf)" button below!</span>`;
+                    if (customFontFeedback) customFontFeedback.innerHTML = `<span style="color: #f87171;">Not found in system. Tip: Use "Font File (.ttf)" button below!</span>`;
                 }
             } else {
                 if (customFontFeedback) customFontFeedback.innerHTML = '';
@@ -3697,7 +3700,7 @@
                 keys.sort().forEach(key => {
                     const opt = document.createElement('option');
                     opt.value = `user_${key}`;
-                    opt.textContent = `★ ${key}`;
+                    opt.textContent = key;
                     userPresetsOptgroup.appendChild(opt);
                 });
             }
