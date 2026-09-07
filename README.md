@@ -19,8 +19,15 @@ A high-performance, standalone, client-side web application for transforming ima
 - **Transparency & Cutoff**:
   - Real-time transparency checkerboard support (only active when background is set to transparent).
   - Background cutoff / shadow suppression to eliminate stray glyphs in dark regions.
+- **GIF & Video Real-Time ASCII Engine**:
+  - Drag-and-drop or load **animated GIFs**, **MP4**, **WebM**, and **MOV** videos.
+  - Real-time ASCII rendering at up to 60 FPS using hardware-accelerated video frames and WebCodecs `ImageDecoder`.
+  - Floating frosted-glass **Media Player Bar** with Play/Pause, timeline seekbar, loop toggle, and audio controls (with Spacebar shortcut).
+  - **Export ASCII Video** directly to **WebM**.
+- **Flexible Workspace**:
+  - **Sidebar Position Toggle**: Switch between **Left** and **Right** sidebar layouts with persistent browser state.
 - **High-Resolution Exports**:
-  - Export to **PNG (Full HD 1080p, 4K UHD, 6K Ultra HD)**.
+  - Single-click export dropdown: **Full HD (1080p)**, **4K UHD (2160p, default)**, and **8K Ultra HD (4320p)** PNG.
   - Copy raw ASCII text directly to clipboard.
 - **Preset System**:
   - Save and load your custom configs directly via `localStorage`.

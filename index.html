@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASCII ART CREATOR - 6K Ultra HD Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>ASCII ART CREATOR - 8K Studio</title>
     <style>
         @font-face {
             font-family: 'Goliath';
@@ -30,7 +27,7 @@
             --text-dim: #5c5c5c;
             --control-bg: rgba(255, 255, 255, 0.035);
             --control-border: rgba(255, 255, 255, 0.08);
-            --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
         }
 
@@ -56,7 +53,7 @@
         }
 
         /* ------------------------------------------------------------- */
-        /* SIDEBAR (LEFT)                                                */
+        /* SIDEBAR (LEFT / RIGHT)                                        */
         /* ------------------------------------------------------------- */
         aside {
             width: 420px;
@@ -69,6 +66,17 @@
             flex-direction: column;
             flex-shrink: 0;
             z-index: 10;
+            transition: border 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        body.sidebar-right {
+            flex-direction: row-reverse;
+        }
+
+        body.sidebar-right aside {
+            border-right: none;
+            border-left: 1px solid var(--border-subtle);
+            box-shadow: -10px 0 35px rgba(0, 0, 0, 0.7);
         }
 
         .header {
@@ -667,6 +675,104 @@
             z-index: 10;
         }
 
+        /* ------------------------------------------------------------- */
+        /* FLOATING MEDIA PLAYER BAR (VIDEOS & GIFS)                     */
+        /* ------------------------------------------------------------- */
+        .media-player-bar {
+            position: absolute;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 16px;
+            background: rgba(14, 14, 18, 0.88);
+            backdrop-filter: blur(28px) saturate(160%);
+            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 30px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 18px rgba(194, 253, 4, 0.1);
+            z-index: 25;
+            width: 90%;
+            max-width: 480px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .player-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .player-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.28);
+            color: #C2FD04;
+            transform: scale(1.06);
+        }
+
+        .player-btn.active {
+            color: #C2FD04;
+            border-color: rgba(194, 253, 4, 0.4);
+            background: rgba(194, 253, 4, 0.12);
+        }
+
+        .player-time {
+            font-size: 0.72rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .player-seekbar {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.14);
+            outline: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .player-seekbar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #C2FD04;
+            box-shadow: 0 0 10px rgba(194, 253, 4, 0.85);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .player-seekbar::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+
+        .player-seekbar::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border: none;
+            border-radius: 50%;
+            background: #C2FD04;
+            box-shadow: 0 0 10px rgba(194, 253, 4, 0.85);
+            cursor: pointer;
+        }
+
         canvas#previewCanvas {
             max-width: 92%;
             max-height: 92%;
@@ -730,16 +836,17 @@
         /* RESPONSIVE MOBILE STYLES (Smartphones & Tablets)              */
         /* ------------------------------------------------------------- */
         @media (max-width: 900px) {
-            body {
+            body, body.sidebar-right {
                 flex-direction: column-reverse;
                 height: auto;
                 min-height: 100vh;
                 overflow-y: auto;
                 overflow-x: hidden;
             }
-            aside {
+            aside, body.sidebar-right aside {
                 width: 100%;
                 border-right: none;
+                border-left: none;
                 border-top: 1px solid var(--border-subtle);
                 box-shadow: none;
             }
@@ -782,9 +889,9 @@
                 <svg viewBox="0 0 24 24">
                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                 </svg>
-                <p>Drag and drop image here or browse</p>
-                <span>PNG, JPG, WEBP in native quality</span>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                <p>Drag and drop image, GIF, or video here</p>
+                <span>Images, GIFs, MP4, WebM, MOV</span>
+                <input type="file" id="fileInput" accept="image/*,video/*,.gif,.mp4,.webm,.mov" style="display: none;">
             </div>
 
             <!-- Presets Manager (LocalStorage) -->
@@ -1135,23 +1242,24 @@
         </div>
 
         <div class="actions">
-            <div class="export-label">Export Resolutions</div>
-            <button class="btn btn-hero" id="btnExport6K" title="6K Ultra HD (6144 px)">
+            <div class="export-label">Export Resolution</div>
+            <select id="exportResolutionSelect" style="width: 100%; margin-bottom: 8px;">
+                <option value="1920">Full HD (1080p)</option>
+                <option value="3840" selected>4K UHD (2160p)</option>
+                <option value="7680">8K Ultra HD (4320p)</option>
+            </select>
+            <button class="btn btn-hero" id="btnExportImage" title="Download ASCII image at selected resolution">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                6K Ultra HD
+                Export PNG
             </button>
-            <div class="btn-row">
-                <button class="btn btn-secondary" id="btnExport4K">4K UHD (3840p)</button>
-                <button class="btn btn-secondary" id="btnExport1080">Full HD (1080p)</button>
-            </div>
-            <button class="btn btn-secondary" id="btnCopyText" style="margin-top: 2px;">
+            <button class="btn btn-secondary" id="btnCopyText" style="margin-top: 4px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 Copy ASCII Text to Clipboard
             </button>
-
-            <div style="text-align: center; padding: 14px 0 6px 0; font-size: 0.72rem; color: var(--text-muted);">
-                vibe coded by <a href="https://discord.com/users/289503943409664000" target="_blank" rel="noopener noreferrer" style="color: #C2FD04; text-decoration: none; font-weight: 700;">SKB</a>
-            </div>
+            <button class="btn btn-secondary" id="btnExportVideo" style="display: none; margin-top: 4px; border-color: rgba(194, 253, 4, 0.4); color: #C2FD04;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                <span id="btnExportVideoText">Export ASCII Video (WebM)</span>
+            </button>
         </div>
     </aside>
 
@@ -1167,6 +1275,10 @@
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         <span>Reset View</span>
                     </button>
+                    <button class="btn-tool" id="btnToggleSidebar" title="Switch Sidebar Position (Left / Right)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                        <span id="sidebarPosText">Sidebar: Left</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1179,10 +1291,27 @@
                 <svg viewBox="0 0 24 24">
                     <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                 </svg>
-                <p>Drag and drop an image here or browse</p>
-                <span>PNG, JPG, WEBP in native resolution</span>
+                <p>Drag and drop an image, GIF, or video here</p>
+                <span>Images, GIFs, MP4, WebM, MOV in native resolution</span>
             </div>
             <canvas id="previewCanvas" style="display: none;"></canvas>
+
+            <!-- Floating Media Player Bar (Videos & GIFs) -->
+            <div class="media-player-bar" id="mediaPlayerBar" style="display: none;">
+                <button class="player-btn" id="btnPlayPause" title="Play / Pause">
+                    <svg id="iconPlay" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <svg id="iconPause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </button>
+                <span class="player-time" id="playerTime">00:00 / 00:00</span>
+                <input type="range" class="player-seekbar" id="playerSeekbar" min="0" max="100" value="0" step="0.05">
+                <button class="player-btn active" id="btnLoop" title="Toggle Loop">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+                <button class="player-btn" id="btnMute" title="Toggle Audio">
+                    <svg id="iconMute" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                    <svg id="iconUnmute" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
+            </div>
         </div>
     </main>
 
@@ -1361,8 +1490,38 @@
         let calculatedGrid = null;
         let checkerboardEnabled = false;
 
+        // Media playback state (Images, Videos, Animated GIFs)
+        let currentMediaMode = 'IMAGE'; // 'IMAGE' | 'VIDEO' | 'GIF'
+        let currentVideo = null;
+        let gifFrames = [];
+        let gifCurrentFrame = 0;
+        let isPlaying = false;
+        let isSeeking = false;
+        let animationFrameId = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        // Shared offscreen sampling canvas (for performance during video playback)
+        const sharedSampleCanvas = document.createElement('canvas');
+        const sharedSampleCtx = sharedSampleCanvas.getContext('2d', { willReadFrequently: true });
+
         // DOM elements
         const viewport = document.getElementById('viewport');
+        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+        const sidebarPosText = document.getElementById('sidebarPosText');
+        const mediaPlayerBar = document.getElementById('mediaPlayerBar');
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const iconPlay = document.getElementById('iconPlay');
+        const iconPause = document.getElementById('iconPause');
+        const playerTime = document.getElementById('playerTime');
+        const playerSeekbar = document.getElementById('playerSeekbar');
+        const btnLoop = document.getElementById('btnLoop');
+        const btnMute = document.getElementById('btnMute');
+        const iconMute = document.getElementById('iconMute');
+        const iconUnmute = document.getElementById('iconUnmute');
+        const btnExportVideo = document.getElementById('btnExportVideo');
+        const btnExportVideoText = document.getElementById('btnExportVideoText');
         const btnResetView = document.getElementById('btnResetView');
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
@@ -1568,14 +1727,44 @@
         dropZone.onclick = () => fileInput.click();
         
         fileInput.onchange = (e) => {
-            if (e.target.files && e.target.files[0]) loadImage(e.target.files[0]);
+            if (e.target.files && e.target.files[0]) handleIncomingFile(e.target.files[0]);
         };
+
+        function formatTime(sec) {
+            if (isNaN(sec) || !isFinite(sec)) return '00:00';
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function updatePlayPauseIcon(playing) {
+            if (iconPlay && iconPause) {
+                iconPlay.style.display = playing ? 'none' : 'block';
+                iconPause.style.display = playing ? 'block' : 'none';
+            }
+        }
+
+        function stopPlayback() {
+            isPlaying = false;
+            updatePlayPauseIcon(false);
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            if (currentVideo) {
+                currentVideo.pause();
+            }
+        }
 
         function handleIncomingFile(file) {
             if (!file) return;
             const ext = file.name.split('.').pop().toLowerCase();
             if (['ttf', 'otf', 'woff', 'woff2'].includes(ext)) {
                 loadFontFromFile(file);
+            } else if (file.type.startsWith('video/') || ['mp4', 'webm', 'mov', 'm4v', 'ogg'].includes(ext)) {
+                loadVideo(file);
+            } else if (ext === 'gif' || file.type === 'image/gif') {
+                loadGif(file);
             } else {
                 loadImage(file);
             }
@@ -1631,6 +1820,16 @@
         }, false);
 
         function loadImage(file) {
+            stopPlayback();
+            currentMediaMode = 'IMAGE';
+            if (mediaPlayerBar) mediaPlayerBar.style.display = 'none';
+            if (btnExportVideo) btnExportVideo.style.display = 'none';
+            if (currentVideo && currentVideo.src) {
+                URL.revokeObjectURL(currentVideo.src);
+                currentVideo = null;
+            }
+            gifFrames = [];
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -1640,10 +1839,171 @@
                     previewCanvas.style.display = 'block';
                     resetView();
                     processAndRender();
+                    showToast('Image loaded successfully');
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        function loadVideo(file) {
+            stopPlayback();
+            currentMediaMode = 'VIDEO';
+            gifFrames = [];
+            if (currentVideo && currentVideo.src) {
+                URL.revokeObjectURL(currentVideo.src);
+            }
+
+            showToast('Loading video...');
+            const video = document.createElement('video');
+            video.playsInline = true;
+            video.muted = true;
+            video.loop = btnLoop ? btnLoop.classList.contains('active') : true;
+            video.crossOrigin = 'anonymous';
+
+            const url = URL.createObjectURL(file);
+            video.src = url;
+
+            video.onloadedmetadata = () => {
+                currentVideo = video;
+                currentImage = video;
+                placeholder.style.display = 'none';
+                previewCanvas.style.display = 'block';
+                if (mediaPlayerBar) mediaPlayerBar.style.display = 'flex';
+                if (btnExportVideo) {
+                    btnExportVideo.style.display = 'flex';
+                    btnExportVideoText.textContent = 'Export ASCII Video (WebM)';
+                }
+
+                if (playerSeekbar) playerSeekbar.value = 0;
+                if (playerTime) playerTime.textContent = `00:00 / ${formatTime(video.duration)}`;
+                resetView();
+
+                video.play().then(() => {
+                    isPlaying = true;
+                    updatePlayPauseIcon(true);
+                    startVideoPlaybackLoop();
+                    showToast(`Video loaded (${video.videoWidth}×${video.videoHeight})`);
+                }).catch(() => {
+                    isPlaying = false;
+                    updatePlayPauseIcon(false);
+                    processAndRender();
+                });
+            };
+
+            video.ontimeupdate = () => {
+                if (!isSeeking && video.duration) {
+                    if (playerSeekbar) playerSeekbar.value = (video.currentTime / video.duration) * 100;
+                    if (playerTime) playerTime.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+                }
+            };
+
+            video.onended = () => {
+                if (!video.loop) {
+                    isPlaying = false;
+                    updatePlayPauseIcon(false);
+                }
+            };
+        }
+
+        function startVideoPlaybackLoop() {
+            function renderStep() {
+                if (currentMediaMode !== 'VIDEO' || !currentVideo || currentVideo.paused) return;
+                processAndRender();
+                if ('requestVideoFrameCallback' in currentVideo) {
+                    currentVideo.requestVideoFrameCallback(renderStep);
+                } else {
+                    animationFrameId = requestAnimationFrame(renderStep);
+                }
+            }
+
+            if ('requestVideoFrameCallback' in currentVideo) {
+                currentVideo.requestVideoFrameCallback(renderStep);
+            } else {
+                animationFrameId = requestAnimationFrame(renderStep);
+            }
+        }
+
+        async function loadGif(file) {
+            stopPlayback();
+            currentMediaMode = 'GIF';
+            if (currentVideo && currentVideo.src) {
+                URL.revokeObjectURL(currentVideo.src);
+                currentVideo = null;
+            }
+
+            if ('ImageDecoder' in window) {
+                try {
+                    showToast('Decoding animated GIF frames...');
+                    const buffer = await file.arrayBuffer();
+                    const decoder = new ImageDecoder({ data: buffer, type: 'image/gif' });
+                    await decoder.tracks.ready;
+                    const track = decoder.tracks.selectedTrack;
+                    const frameCount = track.frameCount;
+
+                    if (frameCount > 1) {
+                        gifFrames = [];
+                        for (let i = 0; i < frameCount; i++) {
+                            const result = await decoder.decode({ frameIndex: i });
+                            const fCanvas = document.createElement('canvas');
+                            fCanvas.width = result.image.displayWidth;
+                            fCanvas.height = result.image.displayHeight;
+                            const fCtx = fCanvas.getContext('2d');
+                            fCtx.drawImage(result.image, 0, 0);
+                            gifFrames.push({
+                                canvas: fCanvas,
+                                duration: Math.max(20, (result.image.duration || 100000) / 1000)
+                            });
+                        }
+
+                        gifCurrentFrame = 0;
+                        currentImage = gifFrames[0].canvas;
+                        placeholder.style.display = 'none';
+                        previewCanvas.style.display = 'block';
+                        if (mediaPlayerBar) mediaPlayerBar.style.display = 'flex';
+                        if (btnExportVideo) {
+                            btnExportVideo.style.display = 'flex';
+                            btnExportVideoText.textContent = 'Export ASCII Video (WebM)';
+                        }
+
+                        if (playerSeekbar) playerSeekbar.value = 0;
+                        if (playerTime) playerTime.textContent = `Frame 1 / ${gifFrames.length}`;
+                        resetView();
+                        isPlaying = true;
+                        updatePlayPauseIcon(true);
+                        startGifPlaybackLoop();
+                        showToast(`GIF loaded (${frameCount} frames)!`);
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('ImageDecoder failed, loading as static image:', err);
+                }
+            }
+
+            // Fallback to standard image loader
+            loadImage(file);
+        }
+
+        let lastGifFrameTime = 0;
+        function startGifPlaybackLoop() {
+            function renderGifStep(now) {
+                if (currentMediaMode !== 'GIF' || !isPlaying || gifFrames.length === 0) return;
+                const frameData = gifFrames[gifCurrentFrame];
+                const delay = frameData.duration || 100;
+
+                if (now - lastGifFrameTime >= delay) {
+                    lastGifFrameTime = now;
+                    gifCurrentFrame = (gifCurrentFrame + 1) % gifFrames.length;
+                    currentImage = gifFrames[gifCurrentFrame].canvas;
+                    processAndRender();
+                    if (playerSeekbar) playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
+                    if (playerTime) playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
+                }
+                animationFrameId = requestAnimationFrame(renderGifStep);
+            }
+
+            lastGifFrameTime = performance.now();
+            animationFrameId = requestAnimationFrame(renderGifStep);
         }
 
         charPreset.onchange = () => {
@@ -2037,20 +2397,22 @@
         function processAndRender() {
             if (!currentImage) return;
 
+            const mWidth = currentImage.videoWidth || currentImage.naturalWidth || currentImage.width || 1920;
+            const mHeight = currentImage.videoHeight || currentImage.naturalHeight || currentImage.height || 1080;
+            if (mWidth <= 0 || mHeight <= 0) return;
+
             const cols = parseInt(colsSlider.value, 10);
             const charAspect = parseFloat(aspectSlider.value);
-            const imgAspect = currentImage.width / currentImage.height;
+            const imgAspect = mWidth / mHeight;
             const rows = Math.max(1, Math.round((cols * charAspect) / imgAspect));
 
-            gridInfo.textContent = `Grid: ${cols} cols × ${rows} rows (${cols * rows} chars) | Original: ${currentImage.width}×${currentImage.height}px`;
+            gridInfo.textContent = `Grid: ${cols} cols × ${rows} rows (${cols * rows} chars) | Source: ${mWidth}×${mHeight}px`;
 
-            const sampleCanvas = document.createElement('canvas');
-            sampleCanvas.width = cols;
-            sampleCanvas.height = rows;
-            const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+            sharedSampleCanvas.width = cols;
+            sharedSampleCanvas.height = rows;
             
-            sampleCtx.drawImage(currentImage, 0, 0, cols, rows);
-            const imgData = sampleCtx.getImageData(0, 0, cols, rows);
+            sharedSampleCtx.drawImage(currentImage, 0, 0, cols, rows);
+            const imgData = sharedSampleCtx.getImageData(0, 0, cols, rows);
             const pixels = imgData.data;
 
             const ramp = getRamp();
@@ -2186,7 +2548,9 @@
 
         function exportImage(targetW, label) {
             if (!calculatedGrid || !currentImage) return alert('Please load an image first!');
-            const imgAspect = currentImage.width / currentImage.height;
+            const mWidth = currentImage.videoWidth || currentImage.naturalWidth || currentImage.width || 1920;
+            const mHeight = currentImage.videoHeight || currentImage.naturalHeight || currentImage.height || 1080;
+            const imgAspect = mWidth / mHeight;
             const targetH = Math.round(targetW / imgAspect);
 
             showToast(`${label} rendering (${targetW}×${targetH})...`);
@@ -2205,9 +2569,16 @@
             }, 30);
         }
 
-        document.getElementById('btnExport6K').onclick = () => exportImage(6144, '6K Ultra HD');
-        document.getElementById('btnExport4K').onclick = () => exportImage(3840, '4K UHD');
-        document.getElementById('btnExport1080').onclick = () => exportImage(1920, 'Full HD');
+        const exportResolutionSelect = document.getElementById('exportResolutionSelect');
+        const btnExportImage = document.getElementById('btnExportImage');
+
+        if (btnExportImage) {
+            btnExportImage.onclick = () => {
+                const targetW = parseInt(exportResolutionSelect.value, 10) || 3840;
+                const label = exportResolutionSelect.options[exportResolutionSelect.selectedIndex].text;
+                exportImage(targetW, label);
+            };
+        }
 
         document.getElementById('btnCopyText').onclick = () => {
             if (!calculatedGrid) return alert('Please load an image first!');
@@ -2216,6 +2587,247 @@
                 showToast('Pure ASCII text copied to clipboard');
             });
         };
+
+        // -------------------------------------------------------------
+        // SIDEBAR POSITION TOGGLE (LEFT / RIGHT)
+        // -------------------------------------------------------------
+        const SIDEBAR_POS_KEY = 'ascii_art_sidebar_pos';
+
+        function setSidebarPosition(pos) {
+            const isRight = (pos === 'right');
+            document.body.classList.toggle('sidebar-right', isRight);
+            if (sidebarPosText) {
+                sidebarPosText.textContent = isRight ? 'Sidebar: Right' : 'Sidebar: Left';
+            }
+        }
+
+        function initSidebarPosition() {
+            try {
+                const saved = localStorage.getItem(SIDEBAR_POS_KEY) || 'left';
+                setSidebarPosition(saved);
+            } catch (e) {
+                setSidebarPosition('left');
+            }
+        }
+
+        if (btnToggleSidebar) {
+            btnToggleSidebar.onclick = () => {
+                const currentlyRight = document.body.classList.contains('sidebar-right');
+                const nextPos = currentlyRight ? 'left' : 'right';
+                setSidebarPosition(nextPos);
+                try {
+                    localStorage.setItem(SIDEBAR_POS_KEY, nextPos);
+                } catch (e) {}
+                showToast(`Sidebar moved to ${nextPos === 'right' ? 'Right' : 'Left'}`);
+            };
+        }
+
+        // -------------------------------------------------------------
+        // MEDIA PLAYER BAR CONTROLS (VIDEO & GIF)
+        // -------------------------------------------------------------
+        if (btnPlayPause) {
+            btnPlayPause.onclick = () => {
+                if (currentMediaMode === 'VIDEO' && currentVideo) {
+                    if (currentVideo.paused) {
+                        currentVideo.play().then(() => {
+                            isPlaying = true;
+                            updatePlayPauseIcon(true);
+                            startVideoPlaybackLoop();
+                        }).catch(err => console.warn(err));
+                    } else {
+                        currentVideo.pause();
+                        isPlaying = false;
+                        updatePlayPauseIcon(false);
+                    }
+                } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
+                    isPlaying = !isPlaying;
+                    updatePlayPauseIcon(isPlaying);
+                    if (isPlaying) {
+                        startGifPlaybackLoop();
+                    }
+                }
+            };
+        }
+
+        if (playerSeekbar) {
+            playerSeekbar.oninput = () => {
+                isSeeking = true;
+                const ratio = parseFloat(playerSeekbar.value) / 100;
+                if (currentMediaMode === 'VIDEO' && currentVideo && currentVideo.duration) {
+                    currentVideo.currentTime = ratio * currentVideo.duration;
+                    if (playerTime) {
+                        playerTime.textContent = `${formatTime(currentVideo.currentTime)} / ${formatTime(currentVideo.duration)}`;
+                    }
+                } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
+                    const fIdx = Math.min(gifFrames.length - 1, Math.floor(ratio * gifFrames.length));
+                    gifCurrentFrame = fIdx;
+                    currentImage = gifFrames[fIdx].canvas;
+                    processAndRender();
+                    if (playerTime) {
+                        playerTime.textContent = `Frame ${fIdx + 1} / ${gifFrames.length}`;
+                    }
+                }
+            };
+
+            playerSeekbar.onchange = () => {
+                isSeeking = false;
+                if (currentMediaMode === 'VIDEO' && currentVideo && isPlaying && currentVideo.paused) {
+                    currentVideo.play().catch(err => console.warn(err));
+                }
+            };
+        }
+
+        if (btnLoop) {
+            btnLoop.onclick = () => {
+                btnLoop.classList.toggle('active');
+                const looping = btnLoop.classList.contains('active');
+                if (currentVideo) currentVideo.loop = looping;
+                showToast(looping ? 'Looping enabled' : 'Looping disabled');
+            };
+        }
+
+        if (btnMute) {
+            btnMute.onclick = () => {
+                if (!currentVideo) return;
+                currentVideo.muted = !currentVideo.muted;
+                if (iconMute && iconUnmute) {
+                    iconMute.style.display = currentVideo.muted ? 'block' : 'none';
+                    iconUnmute.style.display = currentVideo.muted ? 'none' : 'block';
+                }
+                showToast(currentVideo.muted ? 'Audio muted' : 'Audio unmuted');
+            };
+        }
+
+        // Spacebar to toggle Play/Pause for Video / GIF
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && (currentMediaMode === 'VIDEO' || currentMediaMode === 'GIF')) {
+                const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+                if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
+                    e.preventDefault();
+                    if (btnPlayPause) btnPlayPause.click();
+                }
+            }
+        });
+
+        // -------------------------------------------------------------
+        // VIDEO / GIF EXPORT (WEBM RECORDER)
+        // -------------------------------------------------------------
+        if (btnExportVideo) {
+            btnExportVideo.onclick = () => {
+                if (isRecording) {
+                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                    return;
+                }
+
+                if (currentMediaMode !== 'VIDEO' && currentMediaMode !== 'GIF') {
+                    alert('Please load a video or animated GIF first!');
+                    return;
+                }
+
+                if (typeof MediaRecorder === 'undefined') {
+                    alert('MediaRecorder is not supported in this browser. Please use Chrome, Edge, or Firefox.');
+                    return;
+                }
+
+                startVideoExport();
+            };
+        }
+
+        function startVideoExport() {
+            isRecording = true;
+            recordedChunks = [];
+
+            const candidateTypes = [
+                'video/webm;codecs=vp9',
+                'video/webm;codecs=vp8',
+                'video/webm'
+            ];
+            let chosenMime = candidateTypes.find(t => MediaRecorder.isTypeSupported(t)) || '';
+
+            const stream = previewCanvas.captureStream(30);
+            const options = chosenMime ? { mimeType: chosenMime, videoBitsPerSecond: 8000000 } : {};
+
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch (err) {
+                alert('Could not start MediaRecorder: ' + err.message);
+                isRecording = false;
+                return;
+            }
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                isRecording = false;
+                if (btnExportVideoText) btnExportVideoText.textContent = 'Export ASCII Video (WebM)';
+                btnExportVideo.style.borderColor = 'rgba(194, 253, 4, 0.4)';
+                btnExportVideo.style.color = '#C2FD04';
+
+                if (recordedChunks.length === 0) {
+                    showToast('Video export cancelled or empty');
+                    return;
+                }
+
+                const blob = new Blob(recordedChunks, { type: chosenMime || 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ASCII_Video_${Date.now()}.webm`;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 20000);
+                showToast('ASCII Video (WebM) exported successfully!');
+            };
+
+            if (btnExportVideoText) btnExportVideoText.textContent = 'Recording... (Click to Stop)';
+            btnExportVideo.style.borderColor = '#ff4444';
+            btnExportVideo.style.color = '#ff4444';
+            showToast('Recording ASCII video... Playback running');
+
+            mediaRecorder.start(100);
+
+            if (currentMediaMode === 'VIDEO' && currentVideo) {
+                const origLoop = currentVideo.loop;
+                currentVideo.loop = false;
+                currentVideo.currentTime = 0;
+                currentVideo.play().then(() => {
+                    isPlaying = true;
+                    updatePlayPauseIcon(true);
+                    startVideoPlaybackLoop();
+                }).catch(e => console.warn(e));
+
+                const handleEnd = () => {
+                    currentVideo.removeEventListener('ended', handleEnd);
+                    currentVideo.loop = origLoop;
+                    setTimeout(() => {
+                        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                            mediaRecorder.stop();
+                        }
+                    }, 250);
+                };
+                currentVideo.addEventListener('ended', handleEnd);
+
+            } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
+                gifCurrentFrame = 0;
+                isPlaying = true;
+                updatePlayPauseIcon(true);
+                startGifPlaybackLoop();
+
+                let totalDurationMs = gifFrames.reduce((acc, f) => acc + (f.duration || 100), 0);
+                totalDurationMs = Math.max(2000, Math.min(30000, totalDurationMs));
+
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                }, totalDurationMs + 200);
+            }
+        }
 
         function showToast(msg) {
             toast.textContent = msg;
@@ -2504,7 +3116,7 @@
         // Initialize user presets on page load
         refreshUserPresetsDropdown();
         updateCheckerboardState();
-
+        initSidebarPosition();
 
     </script>
 </body>
