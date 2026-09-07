@@ -2004,6 +2004,13 @@
                 }
             };
 
+            video.onseeked = () => {
+                if (currentMediaMode === 'VIDEO') {
+                    currentImage = video;
+                    processAndRender();
+                }
+            };
+
             video.onended = () => {
                 if (!video.loop) {
                     isPlaying = false;
@@ -2014,7 +2021,7 @@
 
         function startVideoPlaybackLoop() {
             function renderStep() {
-                if (currentMediaMode !== 'VIDEO' || !currentVideo || currentVideo.paused) return;
+                if (currentMediaMode !== 'VIDEO' || !currentVideo || currentVideo.paused || isSeeking) return;
                 processAndRender();
                 if ('requestVideoFrameCallback' in currentVideo) {
                     currentVideo.requestVideoFrameCallback(renderStep);
@@ -2093,7 +2100,7 @@
         let lastGifFrameTime = 0;
         function startGifPlaybackLoop() {
             function renderGifStep(now) {
-                if (currentMediaMode !== 'GIF' || !isPlaying || gifFrames.length === 0) return;
+                if (currentMediaMode !== 'GIF' || !isPlaying || isSeeking || gifFrames.length === 0) return;
                 const frameData = gifFrames[gifCurrentFrame];
                 const delay = frameData.duration || 100;
 
@@ -2102,8 +2109,8 @@
                     gifCurrentFrame = (gifCurrentFrame + 1) % gifFrames.length;
                     currentImage = gifFrames[gifCurrentFrame].canvas;
                     processAndRender();
-                    if (playerSeekbar) playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
-                    if (playerTime) playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
+                    if (playerSeekbar && !isSeeking) playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
+                    if (playerTime && !isSeeking) playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
                 }
                 animationFrameId = requestAnimationFrame(renderGifStep);
             }
@@ -2760,17 +2767,37 @@
             };
         }
 
+        let wasPlayingBeforeScrub = false;
+
         if (playerSeekbar) {
+            const startSeeking = () => {
+                isSeeking = true;
+                if (currentMediaMode === 'VIDEO' && currentVideo) {
+                    wasPlayingBeforeScrub = !currentVideo.paused;
+                    if (wasPlayingBeforeScrub) currentVideo.pause();
+                } else if (currentMediaMode === 'GIF') {
+                    wasPlayingBeforeScrub = isPlaying;
+                }
+            };
+
+            playerSeekbar.addEventListener('pointerdown', startSeeking);
+            playerSeekbar.addEventListener('mousedown', startSeeking);
+            playerSeekbar.addEventListener('touchstart', startSeeking, { passive: true });
+
             playerSeekbar.oninput = () => {
                 isSeeking = true;
                 const ratio = parseFloat(playerSeekbar.value) / 100;
+
                 if (currentMediaMode === 'VIDEO' && currentVideo && currentVideo.duration) {
-                    currentVideo.currentTime = ratio * currentVideo.duration;
+                    const targetTime = Math.min(currentVideo.duration, Math.max(0, ratio * currentVideo.duration));
+                    currentVideo.currentTime = targetTime;
                     if (playerTime) {
-                        playerTime.textContent = `${formatTime(currentVideo.currentTime)} / ${formatTime(currentVideo.duration)}`;
+                        playerTime.textContent = `${formatTime(targetTime)} / ${formatTime(currentVideo.duration)}`;
                     }
+                    currentImage = currentVideo;
+                    processAndRender();
                 } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
-                    const fIdx = Math.min(gifFrames.length - 1, Math.floor(ratio * gifFrames.length));
+                    const fIdx = Math.min(gifFrames.length - 1, Math.max(0, Math.floor(ratio * gifFrames.length)));
                     gifCurrentFrame = fIdx;
                     currentImage = gifFrames[fIdx].canvas;
                     processAndRender();
@@ -2780,12 +2807,66 @@
                 }
             };
 
-            playerSeekbar.onchange = () => {
+            const finishSeeking = () => {
                 isSeeking = false;
-                if (currentMediaMode === 'VIDEO' && currentVideo && isPlaying && currentVideo.paused) {
-                    currentVideo.play().catch(err => console.warn(err));
+                if (currentMediaMode === 'VIDEO' && currentVideo) {
+                    currentImage = currentVideo;
+                    processAndRender();
+                    if (wasPlayingBeforeScrub) {
+                        currentVideo.play().then(() => {
+                            isPlaying = true;
+                            updatePlayPauseIcon(true);
+                            startVideoPlaybackLoop();
+                        }).catch(err => console.warn(err));
+                    }
+                } else if (currentMediaMode === 'GIF') {
+                    currentImage = gifFrames[gifCurrentFrame].canvas;
+                    processAndRender();
+                    if (wasPlayingBeforeScrub) {
+                        isPlaying = true;
+                        updatePlayPauseIcon(true);
+                        startGifPlaybackLoop();
+                    }
                 }
             };
+
+            playerSeekbar.onchange = finishSeeking;
+            playerSeekbar.addEventListener('pointerup', finishSeeking);
+            playerSeekbar.addEventListener('mouseup', finishSeeking);
+            playerSeekbar.addEventListener('touchend', finishSeeking);
+
+            // Mouse wheel support over timeline / player bar to scroll frame-by-frame
+            const handleTimelineWheel = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const delta = e.deltaY > 0 ? -1 : 1; // wheel up = forward, wheel down = backward
+
+                if (currentMediaMode === 'VIDEO' && currentVideo && currentVideo.duration) {
+                    const step = e.shiftKey ? 1.0 : (1 / 30); // 1 frame or 1 second with shift
+                    const newTime = Math.min(currentVideo.duration, Math.max(0, currentVideo.currentTime + delta * step));
+                    currentVideo.currentTime = newTime;
+                    playerSeekbar.value = (newTime / currentVideo.duration) * 100;
+                    if (playerTime) {
+                        playerTime.textContent = `${formatTime(newTime)} / ${formatTime(currentVideo.duration)}`;
+                    }
+                    currentImage = currentVideo;
+                    processAndRender();
+                } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
+                    gifCurrentFrame = (gifCurrentFrame + delta + gifFrames.length) % gifFrames.length;
+                    currentImage = gifFrames[gifCurrentFrame].canvas;
+                    playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
+                    if (playerTime) {
+                        playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
+                    }
+                    processAndRender();
+                }
+            };
+
+            playerSeekbar.addEventListener('wheel', handleTimelineWheel, { passive: false });
+            if (mediaPlayerBar) {
+                mediaPlayerBar.addEventListener('wheel', handleTimelineWheel, { passive: false });
+            }
         }
 
         if (btnLoop) {
