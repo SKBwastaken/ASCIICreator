@@ -2435,6 +2435,25 @@
                 });
             };
 
+            video.onplay = () => {
+                isPlaying = true;
+                updatePlayPauseIcon(true);
+                startVideoPlaybackLoop();
+            };
+
+            video.onplaying = () => {
+                isPlaying = true;
+                updatePlayPauseIcon(true);
+                startVideoPlaybackLoop();
+            };
+
+            video.onpause = () => {
+                if (!isSeeking) {
+                    isPlaying = false;
+                    updatePlayPauseIcon(false);
+                }
+            };
+
             video.ontimeupdate = () => {
                 if (!isSeeking && video.duration) {
                     if (playerSeekbar) playerSeekbar.value = (video.currentTime / video.duration) * 100;
@@ -2455,7 +2474,10 @@
             };
 
             video.onended = () => {
-                if (!video.loop) {
+                if (video.loop) {
+                    video.currentTime = 0;
+                    video.play().catch(() => {});
+                } else {
                     isPlaying = false;
                     updatePlayPauseIcon(false);
                 }
@@ -2463,13 +2485,23 @@
         }
 
         function startVideoPlaybackLoop() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+
             function renderStep() {
-                if (currentMediaMode !== 'VIDEO' || !currentVideo || currentVideo.paused || isSeeking) return;
-                processAndRender();
-                if ('requestVideoFrameCallback' in currentVideo) {
-                    currentVideo.requestVideoFrameCallback(renderStep);
-                } else {
-                    animationFrameId = requestAnimationFrame(renderStep);
+                if (currentMediaMode !== 'VIDEO' || !currentVideo) return;
+
+                if (!currentVideo.paused && !currentVideo.ended) {
+                    if (!isSeeking && !isSeekingVideo) {
+                        processAndRender();
+                    }
+                    if ('requestVideoFrameCallback' in currentVideo) {
+                        currentVideo.requestVideoFrameCallback(renderStep);
+                    } else {
+                        animationFrameId = requestAnimationFrame(renderStep);
+                    }
                 }
             }
 
@@ -2538,18 +2570,26 @@
 
         let lastGifFrameTime = 0;
         function startGifPlaybackLoop() {
-            function renderGifStep(now) {
-                if (currentMediaMode !== 'GIF' || !isPlaying || isSeeking || gifFrames.length === 0) return;
-                const frameData = gifFrames[gifCurrentFrame];
-                const delay = frameData.duration || 100;
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
 
-                if (now - lastGifFrameTime >= delay) {
-                    lastGifFrameTime = now;
-                    gifCurrentFrame = (gifCurrentFrame + 1) % gifFrames.length;
-                    currentImage = gifFrames[gifCurrentFrame].canvas;
-                    processAndRender();
-                    if (playerSeekbar && !isSeeking) playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
-                    if (playerTime && !isSeeking) playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
+            function renderGifStep(now) {
+                if (currentMediaMode !== 'GIF' || !isPlaying || gifFrames.length === 0) return;
+
+                if (!isSeeking) {
+                    const frameData = gifFrames[gifCurrentFrame];
+                    const delay = frameData ? (frameData.duration || 100) : 100;
+
+                    if (now - lastGifFrameTime >= delay) {
+                        lastGifFrameTime = now;
+                        gifCurrentFrame = (gifCurrentFrame + 1) % gifFrames.length;
+                        currentImage = gifFrames[gifCurrentFrame].canvas;
+                        processAndRender();
+                        if (playerSeekbar && !isSeeking) playerSeekbar.value = (gifCurrentFrame / (gifFrames.length - 1 || 1)) * 100;
+                        if (playerTime && !isSeeking) playerTime.textContent = `Frame ${gifCurrentFrame + 1} / ${gifFrames.length}`;
+                    }
                 }
                 animationFrameId = requestAnimationFrame(renderGifStep);
             }
@@ -3206,7 +3246,10 @@
         if (btnPlayPause) {
             btnPlayPause.onclick = () => {
                 if (currentMediaMode === 'VIDEO' && currentVideo) {
-                    if (currentVideo.paused) {
+                    if (currentVideo.paused || currentVideo.ended) {
+                        if (currentVideo.ended || (currentVideo.duration && currentVideo.currentTime >= currentVideo.duration - 0.05)) {
+                            currentVideo.currentTime = 0;
+                        }
                         currentVideo.play().then(() => {
                             isPlaying = true;
                             updatePlayPauseIcon(true);
@@ -3266,6 +3309,7 @@
             };
 
             const finishSeeking = () => {
+                if (!isSeeking) return;
                 isSeeking = false;
                 if (currentMediaMode === 'VIDEO' && currentVideo) {
                     if (!isSeekingVideo) {
@@ -3294,6 +3338,16 @@
             playerSeekbar.addEventListener('pointerup', finishSeeking);
             playerSeekbar.addEventListener('mouseup', finishSeeking);
             playerSeekbar.addEventListener('touchend', finishSeeking);
+
+            window.addEventListener('mouseup', () => {
+                if (isSeeking) finishSeeking();
+            });
+            window.addEventListener('pointerup', () => {
+                if (isSeeking) finishSeeking();
+            });
+            window.addEventListener('touchend', () => {
+                if (isSeeking) finishSeeking();
+            });
 
             // Mouse wheel support over timeline / player bar to scroll frame-by-frame
             const handleTimelineWheel = (e) => {
