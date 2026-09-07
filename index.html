@@ -5164,84 +5164,6 @@
             } catch (e) {}
         }
 
-        // -------------------------------------------------------------
-        // ANIMATED TAB TITLE (SCRAMBLE DECRYPT, ASTERISK BLINK & REPEAT)
-        // -------------------------------------------------------------
-        let titleAnimTimer = null;
-        let titleBlinkTimer = null;
-        let titleLoopTimer = null;
-
-        function startTabTitleAnimation() {
-            if (titleAnimTimer) clearInterval(titleAnimTimer);
-            if (titleBlinkTimer) clearInterval(titleBlinkTimer);
-            if (titleLoopTimer) clearTimeout(titleLoopTimer);
-
-            const target = "ASCII ART CREATOR";
-            const asterisks = "*".repeat(target.length);
-            const glyphs = "!@#$%^&*()_+-=[]{}<>?/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const len = target.length;
-            let resolvedCount = 0;
-            let lastRevealTime = Date.now();
-
-            // Slower, deliberate pacing: 1.25s per character reveal
-            const REVEAL_DELAY_MS = 1250;
-
-            titleAnimTimer = setInterval(() => {
-                const now = Date.now();
-
-                if (now - lastRevealTime >= REVEAL_DELAY_MS) {
-                    lastRevealTime = now;
-                    if (resolvedCount < len) {
-                        resolvedCount++;
-                    }
-                    while (resolvedCount < len && target[resolvedCount] === ' ') {
-                        resolvedCount++;
-                    }
-                }
-
-                const display = [];
-                for (let i = 0; i < len; i++) {
-                    if (i < resolvedCount) {
-                        display.push(target[i]);
-                    } else if (target[i] === ' ') {
-                        display.push(' ');
-                    } else {
-                        display.push(glyphs[Math.floor(Math.random() * glyphs.length)]);
-                    }
-                }
-
-                document.title = display.join('');
-
-                if (resolvedCount >= len) {
-                    clearInterval(titleAnimTimer);
-                    titleAnimTimer = null;
-                    document.title = target;
-
-                    // Phase 2: Blink 4 times (1s asterisks, 1s title, 8 toggles total)
-                    let blinkCount = 0;
-                    titleBlinkTimer = setInterval(() => {
-                        blinkCount++;
-                        if (blinkCount % 2 === 1) {
-                            document.title = asterisks;
-                        } else {
-                            document.title = target;
-                        }
-
-                        if (blinkCount >= 8) {
-                            clearInterval(titleBlinkTimer);
-                            titleBlinkTimer = null;
-                            document.title = target;
-
-                            // Phase 3: Pause briefly (2.5s) on ASCII ART CREATOR, then repeat the animation
-                            titleLoopTimer = setTimeout(() => {
-                                startTabTitleAnimation();
-                            }, 2500);
-                        }
-                    }, 1000);
-                }
-            }, 260);
-        }
-
         // Initialize user presets on page load
         refreshUserPresetsDropdown();
 
@@ -5258,15 +5180,7 @@
         updateLastUpdatedLabel();
         setInterval(updateLastUpdatedLabel, 30000);
         checkAutoShowChangelog();
-        startTabTitleAnimation();
-
-        const titleH1 = document.querySelector('.header-title-box h1');
-        if (titleH1) {
-            titleH1.style.cursor = 'pointer';
-            titleH1.title = 'Click to replay title animation';
-            titleH1.onclick = () => startTabTitleAnimation();
-        }
-
+        document.title = "ASCII ART CREATOR";
     </script>
 </body>
 </html>
