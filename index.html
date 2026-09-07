@@ -1415,10 +1415,11 @@
                         </button>
                     </div>
                     <select id="palettePreset">
+                        <option value="pure_bw">Pure Black & White (1-Bit Binary • No Grayscale)</option>
                         <option value="original_solid">Original Colors (100% Solid per character)</option>
                         <option value="original_avg">Original Colors (Tile Average)</option>
                         <option value="frosted_silver">Frosted Glass / Silver (Milky Glass Glow)</option>
-                        <option value="mono">Monochrome (Pure Black & White)</option>
+                        <option value="mono">Monochrome (Grayscale Gradient)</option>
                         <option value="amiga_wb">Amiga Workbench 1.3 (Blue & Orange)</option>
                         <option value="amiga_ocs">Amiga OCS 16 Colors (Quantized)</option>
                         <option value="gameboy">Nintendo Game Boy (DMG 4-Greens)</option>
@@ -1432,6 +1433,39 @@
                         <option value="matrix">Matrix Digital Green</option>
                     </select>
                     <div class="palette-preview" id="palettePreview"></div>
+
+                    <!-- 1-Bit Binary Pure B&W Controls (Active when Pure Black & White is selected) -->
+                    <div id="pureBwControlsGroup" style="display: none; margin-top: 10px; padding: 10px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--accent-border); border-radius: 8px;">
+                        <div class="control-group" style="margin-bottom: 8px;">
+                            <div class="control-label">
+                                <span style="color: var(--accent); font-weight: 600;">1-Bit Cutoff Threshold</span>
+                                <div class="label-meta">
+                                    <div class="number-input-wrapper">
+                                        <input type="number" id="bwThresholdNumInput" class="control-num-input" min="1" max="99" step="1" value="50">
+                                        <span class="unit-suffix">%</span>
+                                    </div>
+                                    <button class="btn-reset-mini" id="resetBwThreshold" title="Default: 50%">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="range" id="bwThresholdSlider" min="1" max="99" value="50" step="1">
+                            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 3px;">
+                                Strictly binary (ON / OFF). Zero grayscale. Symbols render in 100% solid color.
+                            </div>
+                        </div>
+
+                        <div class="control-group" style="margin-bottom: 0;">
+                            <div class="control-label">
+                                <span>ON Symbol Mode</span>
+                            </div>
+                            <select id="bwSymbolMode" style="width: 100%;">
+                                <option value="solid" selected>Solid Single Symbol (Uniform 1-Bit)</option>
+                                <option value="ramp">Character Ramp Density (100% Pure White)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="control-group">
@@ -1861,6 +1895,13 @@
                                 <div class="changelog-item">
                                     <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Pure Black & White (1-Bit Binary) Mode</span>
+                                        <span class="changelog-item-desc">Strict binary ON/OFF rendering with zero grayscale. Symbols are guaranteed to render in exactly one single color with custom cutoff threshold and symbol density options.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
                                         <span class="changelog-item-title">Dual-Axis Spacing & Fine Aspect Ratio Control</span>
                                         <span class="changelog-item-desc">Independent horizontal (X) and vertical (Y) character spacing sliders with an aspect link toggle, direct numeric typing, and precision aspect steppers.</span>
                                     </div>
@@ -1999,6 +2040,7 @@
 
         // Retro Color Palettes
         const COLOR_PALETTES = {
+            pure_bw:        { type: 'binary_bw', defaultBg: '#000000', swatches: ['#000000', '#ffffff'] },
             original_solid: { type: 'original_solid', defaultBg: '#000000', swatches: ['#ff0055', '#00ff88', '#0099ff', '#ffcc00'] },
             original_avg:   { type: 'original_avg', defaultBg: '#000000', swatches: ['#ff0055', '#00ff88', '#0099ff', '#ffcc00'] },
             amiga_wb: {
@@ -2270,6 +2312,11 @@
         const fontFileInput = document.getElementById('fontFileInput');
         const palettePreset = document.getElementById('palettePreset');
         const palettePreview = document.getElementById('palettePreview');
+        const pureBwControlsGroup = document.getElementById('pureBwControlsGroup');
+        const bwThresholdSlider = document.getElementById('bwThresholdSlider');
+        const bwThresholdNumInput = document.getElementById('bwThresholdNumInput');
+        const resetBwThreshold = document.getElementById('resetBwThreshold');
+        const bwSymbolMode = document.getElementById('bwSymbolMode');
         const bgColor = document.getElementById('bgColor');
         const contrastSlider = document.getElementById('contrastSlider');
         const contrastVal = document.getElementById('contrastVal');
@@ -2301,12 +2348,18 @@
             const p = COLOR_PALETTES[palettePreset.value];
             if (!p) return;
             palettePreview.innerHTML = '';
-            p.swatches.forEach(hex => {
+            const swatches = (palettePreset.value === 'pure_bw' && invertToggle && invertToggle.checked)
+                ? ['#ffffff', '#000000']
+                : p.swatches;
+            swatches.forEach(hex => {
                 const swatch = document.createElement('div');
                 swatch.className = 'palette-swatch';
                 swatch.style.backgroundColor = hex;
                 palettePreview.appendChild(swatch);
             });
+            if (pureBwControlsGroup) {
+                pureBwControlsGroup.style.display = (palettePreset.value === 'pure_bw') ? 'block' : 'none';
+            }
         }
         updatePalettePreview();
 
@@ -2349,6 +2402,32 @@
             updateCheckerboardState();
             processAndRender();
         };
+
+        function setBwThreshold(val) {
+            val = Math.max(1, Math.min(99, parseInt(val, 10) || 50));
+            if (bwThresholdSlider) bwThresholdSlider.value = val;
+            if (bwThresholdNumInput) bwThresholdNumInput.value = val;
+            processAndRender();
+        }
+
+        if (bwThresholdSlider) {
+            bwThresholdSlider.oninput = (e) => setBwThreshold(e.target.value);
+        }
+        if (bwThresholdNumInput) {
+            bwThresholdNumInput.oninput = (e) => setBwThreshold(e.target.value);
+            bwThresholdNumInput.onchange = (e) => setBwThreshold(e.target.value);
+        }
+        if (resetBwThreshold) {
+            resetBwThreshold.onclick = () => {
+                setBwThreshold(50);
+                showToast('Threshold reset to 50%');
+            };
+        }
+        if (bwSymbolMode) {
+            bwSymbolMode.onchange = () => {
+                processAndRender();
+            };
+        }
 
         bgColor.onchange = () => {
             updateCheckerboardState();
@@ -3074,7 +3153,11 @@
             };
         });
 
-        invertToggle.onchange = () => processAndRender();
+        invertToggle.onchange = () => {
+            updatePalettePreview();
+            updateCheckerboardState();
+            processAndRender();
+        };
 
         randomCharToggle.onchange = () => {
             if (btnReshuffleChars) {
@@ -3348,6 +3431,12 @@
             const useTransparency = transparentToggle.checked;
             const alphaThreshold = (parseInt(alphaSlider.value, 10) / 100) * 255;
             const pal = COLOR_PALETTES[palettePreset.value] || COLOR_PALETTES.original_solid;
+            const isBinaryBw = (pal.type === 'binary_bw');
+            const bwThresholdVal = bwThresholdSlider ? parseInt(bwThresholdSlider.value, 10) : 50;
+            const bwThreshold = (bwThresholdVal / 100) * 255;
+            const bwMode = bwSymbolMode ? bwSymbolMode.value : 'solid';
+            const defaultBwSolidChar = nonSpaceRamp.length > 0 ? nonSpaceRamp[nonSpaceRamp.length - 1] : '@';
+            const bwSolidColor = invert ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
 
             const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
 
@@ -3381,6 +3470,34 @@
 
                     let lum = 0.299 * adjR + 0.587 * adjG + 0.114 * adjB;
                     if (invert) lum = 255 - lum;
+
+                    if (isBinaryBw) {
+                        const isPixelOn = lum >= bwThreshold;
+                        if (!isPixelOn) {
+                            charRow.push(' ');
+                            colorRow.push('rgba(0,0,0,0)');
+                            continue;
+                        }
+
+                        let char;
+                        if (bwMode === 'solid') {
+                            char = (isRandomChars && randomPoolLen > 0)
+                                ? randomPool[Math.floor(Math.random() * randomPoolLen)]
+                                : defaultBwSolidChar;
+                        } else {
+                            if (isRandomChars && randomPoolLen > 0) {
+                                char = randomPool[Math.floor(Math.random() * randomPoolLen)];
+                            } else {
+                                const normAbove = (lum - bwThreshold) / Math.max(1, (255 - bwThreshold));
+                                const charIdx = Math.min(rampLen - 1, Math.floor(normAbove * rampLen));
+                                char = ramp[charIdx] && ramp[charIdx].trim().length > 0 ? ramp[charIdx] : defaultBwSolidChar;
+                            }
+                        }
+
+                        charRow.push(char);
+                        colorRow.push(bwSolidColor);
+                        continue;
+                    }
 
                     const normLum = Math.max(0, Math.min(1, lum / 255));
                     const charIdx = Math.min(rampLen - 1, Math.floor(normLum * rampLen));
@@ -3430,6 +3547,9 @@
 
         function getActiveBgColor() {
             if (bgColor.value !== 'auto') return bgColor.value;
+            if (palettePreset.value === 'pure_bw') {
+                return (invertToggle && invertToggle.checked) ? '#ffffff' : '#000000';
+            }
             const pal = COLOR_PALETTES[palettePreset.value];
             return pal ? pal.defaultBg : '#000000';
         }
@@ -4091,6 +4211,8 @@
                 transparent: transparentToggle.checked,
                 alphaThreshold: alphaSlider.value,
                 palettePreset: palettePreset.value,
+                bwThreshold: bwThresholdSlider ? bwThresholdSlider.value : 50,
+                bwSymbolMode: bwSymbolMode ? bwSymbolMode.value : 'solid',
                 bgColor: bgColor.value,
                 checkerboard: checkerboardEnabled
             };
@@ -4159,6 +4281,13 @@
             if (cfg.palettePreset !== undefined) {
                 palettePreset.value = cfg.palettePreset;
                 updatePalettePreview();
+            }
+            if (cfg.bwThreshold !== undefined && bwThresholdSlider) {
+                bwThresholdSlider.value = cfg.bwThreshold;
+                if (bwThresholdNumInput) bwThresholdNumInput.value = cfg.bwThreshold;
+            }
+            if (cfg.bwSymbolMode !== undefined && bwSymbolMode) {
+                bwSymbolMode.value = cfg.bwSymbolMode;
             }
             if (cfg.bgColor !== undefined) bgColor.value = cfg.bgColor;
             if (cfg.checkerboard !== undefined) checkerboardEnabled = !!cfg.checkerboard;
