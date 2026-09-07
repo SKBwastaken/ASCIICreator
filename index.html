@@ -83,6 +83,32 @@
             box-shadow: -10px 0 35px rgba(0, 0, 0, 0.7);
         }
 
+        .sidebar-resizer {
+            width: 8px;
+            margin: 0 -4px;
+            cursor: col-resize;
+            z-index: 50;
+            position: relative;
+            flex-shrink: 0;
+            user-select: none;
+            transition: background 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .sidebar-resizer:hover,
+        body.resizing-sidebar .sidebar-resizer {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        body.resizing-sidebar {
+            cursor: col-resize !important;
+            user-select: none !important;
+        }
+
+        body.resizing-sidebar * {
+            user-select: none !important;
+        }
+
         .header {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border-subtle);
@@ -1116,7 +1142,9 @@
 
         .changelog-body {
             flex: 1;
+            min-height: 0;
             overflow-y: auto;
+            overscroll-behavior: contain;
             padding: 20px 24px;
             display: flex;
             flex-direction: column;
@@ -1367,11 +1395,14 @@
                 overflow-x: hidden;
             }
             aside, body.sidebar-right aside {
-                width: 100%;
+                width: 100% !important;
                 border-right: none;
                 border-left: none;
                 border-top: 1px solid var(--border-subtle);
                 box-shadow: none;
+            }
+            .sidebar-resizer {
+                display: none !important;
             }
             .controls-scroll {
                 overflow-y: visible;
@@ -1433,10 +1464,12 @@
                         <select id="presetSelect" style="flex: 1;">
                             <option value="" disabled selected>Choose a preset to load...</option>
                             <optgroup label="Default Presets" id="defaultPresetsOptgroup">
+                                <option value="default_example_1">Example 1 - Goliath</option>
+                                <option value="default_example_2">Example 2 - Commodore 64</option>
                                 <option value="default_goliath">Goliath Cipher Matrix</option>
                                 <option value="default_retro">Retro Amber Terminal</option>
-                                <option value="default_hires">Ultra HD High-Density</option>
                                 <option value="default_transparent">Transparent Silhouette</option>
+                                <option value="default_hires">Ultra HD High-Density</option>
                             </optgroup>
                             <optgroup label="My Saved Presets" id="userPresetsOptgroup">
                                 <!-- Dynamic from localStorage -->
@@ -1453,6 +1486,18 @@
                             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                             Save
                         </button>
+                    </div>
+
+                    <div style="display: flex; gap: 6px; margin-top: 6px;">
+                        <button type="button" class="btn btn-secondary" id="btnExportPresets" title="Export saved presets to a .json file" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center; gap: 5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btnImportPresets" title="Import presets from a .json file" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center; gap: 5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Import
+                        </button>
+                        <input type="file" id="importPresetsFileInput" accept=".json,application/json" style="display: none;">
                     </div>
                 </div>
             </div>
@@ -1474,21 +1519,20 @@
                     </div>
                     <select id="palettePreset">
                         <option value="pure_bw">Pure Black & White (1-Bit Binary • No Grayscale)</option>
-                        <option value="original_solid">Original Colors (100% Solid per character)</option>
-                        <option value="original_avg">Original Colors (Tile Average)</option>
-                        <option value="frosted_silver">Frosted Glass / Silver (Milky Glass Glow)</option>
-                        <option value="mono">Monochrome (Grayscale Gradient)</option>
-                        <option value="amiga_wb">Amiga Workbench 1.3 (Blue & Orange)</option>
+                        <option value="original_solid">Original Colors (True RGB)</option>
                         <option value="amiga_ocs">Amiga OCS 16 Colors (Quantized)</option>
-                        <option value="gameboy">Nintendo Game Boy (DMG 4-Greens)</option>
+                        <option value="amiga_wb">Amiga Workbench 1.3 (Blue & Orange)</option>
                         <option value="c64">Commodore 64 (Original 16 Colors)</option>
-                        <option value="terminal_green">VT100 Terminal (Phosphor Green)</option>
-                        <option value="terminal_amber">VT220 Terminal (Amber)</option>
+                        <option value="cyberpunk">Cyberpunk / Synthwave (Neon Pink & Cyan)</option>
+                        <option value="frosted_silver">Frosted Glass / Silver (Milky Glass Glow)</option>
                         <option value="cga1">IBM CGA Mode 1 (Black, Cyan, Magenta, White)</option>
                         <option value="cga2">IBM CGA Mode 2 (Black, Green, Red, Yellow)</option>
-                        <option value="zx">Sinclair ZX Spectrum (15 Colors)</option>
-                        <option value="cyberpunk">Cyberpunk / Synthwave (Neon Pink & Cyan)</option>
                         <option value="matrix">Matrix Digital Green</option>
+                        <option value="mono">Monochrome (Grayscale Gradient)</option>
+                        <option value="gameboy">Nintendo Game Boy (DMG 4-Greens)</option>
+                        <option value="zx">Sinclair ZX Spectrum (15 Colors)</option>
+                        <option value="terminal_green">VT100 Terminal (Phosphor Green)</option>
+                        <option value="terminal_amber">VT220 Terminal (Amber)</option>
                     </select>
                     <div class="palette-preview" id="palettePreview"></div>
 
@@ -1637,6 +1681,27 @@
                         </div>
                     </div>
                     <input type="range" id="aspectSlider" min="0.100" max="2.500" value="0.460" step="0.001">
+                </div>
+
+                <!-- Symbol Font Size Scale -->
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>Symbol Size / Scale</span>
+                        <div class="label-meta">
+                            <div class="number-input-wrapper">
+                                <input type="number" id="symbolScaleInput" class="control-num-input" min="10" max="300" step="1" value="100">
+                                <span class="unit-suffix">%</span>
+                            </div>
+                            <button class="btn-reset-mini" id="resetSymbolScale" title="Default: 100%">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <input type="range" id="symbolScaleSlider" min="10" max="300" value="100" step="1">
+                    <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 3px;">
+                        Adjusts symbol font size independently from grid spacing and character count.
+                    </div>
                 </div>
             </div>
 
@@ -1853,6 +1918,7 @@
             </button>
         </div>
     </aside>
+    <div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize sidebar (Double-click to reset)"></div>
 
     <main>
         <div class="top-status-bar">
@@ -1950,11 +2016,64 @@
                     </div>
 
                     <div class="changelog-body">
-                        <!-- v1.5.0 (Latest) -->
+                        <!-- v1.6.0 (Latest) -->
                         <div class="changelog-version-block">
                             <div class="changelog-version-tag">
-                                <span>Version 1.5.0</span>
+                                <span>Version 1.6.0</span>
                                 <span class="badge-latest">Latest Update</span>
+                            </div>
+                            <div class="changelog-list">
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Preset Export & Import (JSON)</span>
+                                        <span class="changelog-item-desc">One-click export and import of user presets as .json files. Automatically saves unsaved changes upon export for effortless backup and sharing.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Curated Example Presets</span>
+                                        <span class="changelog-item-desc">Added "Example 1 - Goliath" (auto-loaded with the Example Picture) and "Example 2 - Commodore 64", permanently pinned at the top of Default Presets.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Symbol Size & Font Scale Slider</span>
+                                        <span class="changelog-item-desc">Adjust symbol font size independently from grid spacing and character count (10% to 300%) with direct numeric input and one-click reset.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Resizable Sidebar & Persistent Width</span>
+                                        <span class="changelog-item-desc">Easily drag the sidebar edge to narrow it down to 260px. Supports left and right positions, double-click to reset, and persists across browser reloads.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Goliath Font Auto-Sync</span>
+                                        <span class="changelog-item-desc">Selecting or loading the Goliath font automatically synchronizes and selects the Goliath alphanumeric character set.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Changelog Scroll Fix & Alphabetical Palettes</span>
+                                        <span class="changelog-item-desc">Changelog modal scrolls smoothly without zooming background canvas. Color presets and default presets are now neatly sorted alphabetically.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="changelog-divider"></div>
+
+                        <!-- v1.5.0 -->
+                        <div class="changelog-version-block">
+                            <div class="changelog-version-tag">
+                                <span style="color: var(--text-muted);">Version 1.5.0</span>
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
@@ -2375,6 +2494,9 @@
         const aspectNumInput = document.getElementById('aspectNumInput');
         const btnAspectDec = document.getElementById('btnAspectDec');
         const btnAspectInc = document.getElementById('btnAspectInc');
+        const symbolScaleSlider = document.getElementById('symbolScaleSlider');
+        const symbolScaleInput = document.getElementById('symbolScaleInput');
+        const resetSymbolScale = document.getElementById('resetSymbolScale');
 
         let isAspectLinked = true;
 
@@ -2575,6 +2697,7 @@
 
         // Scroll-Wheel Zoom centered on mouse cursor
         viewport.addEventListener('wheel', (e) => {
+            if (e.target.closest('#changelogModalOverlay') || e.target.closest('#exportModalOverlay')) return;
             if (!currentImage) return;
             e.preventDefault();
 
@@ -2596,7 +2719,7 @@
         // Mouse Drag to Pan canvas position
         viewport.addEventListener('mousedown', (e) => {
             if (!currentImage) return;
-            if (e.target.closest('button') || e.target.closest('#mediaPlayerBar') || e.target.closest('.media-player-bar') || e.target.closest('#exportModalOverlay') || e.target.closest('input')) return;
+            if (e.target.closest('button') || e.target.closest('#mediaPlayerBar') || e.target.closest('.media-player-bar') || e.target.closest('#exportModalOverlay') || e.target.closest('#changelogModalOverlay') || e.target.closest('input')) return;
 
             isDragging = true;
             dragStartX = e.clientX - panX;
@@ -2762,12 +2885,20 @@
         }
 
         function loadExamplePicture() {
-            showToast('Loading example picture...');
+            showToast('Loading example picture & preset...');
+            const onExampleReady = (imageElement) => {
+                applyLoadedImage(imageElement, 'Example picture & preset loaded');
+                if (typeof BUILTIN_PRESETS !== 'undefined' && BUILTIN_PRESETS.default_example_1) {
+                    applySettings(BUILTIN_PRESETS.default_example_1);
+                    if (presetSelect) presetSelect.value = 'default_example_1';
+                }
+            };
+
             const img = new Image();
-            img.onload = () => applyLoadedImage(img, 'Example picture loaded');
+            img.onload = () => onExampleReady(img);
             img.onerror = () => {
                 const fallbackImg = new Image();
-                fallbackImg.onload = () => applyLoadedImage(fallbackImg, 'Example picture loaded');
+                fallbackImg.onload = () => onExampleReady(fallbackImg);
                 fallbackImg.onerror = () => showToast('Could not load example picture');
                 fallbackImg.src = 'example.png';
             };
@@ -3006,6 +3137,13 @@
             } else {
                 customFontNameGroup.style.display = 'none';
             }
+
+            if (fontFamily.value.toLowerCase().includes('goliath')) {
+                charPreset.value = 'goliath';
+                if (customRampGroup) customRampGroup.style.display = 'none';
+                showToast('Goliath character set selected');
+            }
+
             processAndRender();
         };
 
@@ -3014,6 +3152,10 @@
         customFontName.oninput = () => {
             const name = customFontName.value.trim();
             if (name) {
+                if (name.toLowerCase().includes('goliath')) {
+                    charPreset.value = 'goliath';
+                    if (customRampGroup) customRampGroup.style.display = 'none';
+                }
                 const available = isFontAvailable(name);
                 if (available) {
                     if (customFontFeedback) customFontFeedback.innerHTML = `<span style="color: #4ade80;">Font "${name}" found in system</span>`;
@@ -3112,6 +3254,12 @@
 
                 fontFamily.value = opt.value;
                 if (customFontNameGroup) customFontNameGroup.style.display = 'none';
+
+                if (fontName.toLowerCase().includes('goliath')) {
+                    charPreset.value = 'goliath';
+                    if (customRampGroup) customRampGroup.style.display = 'none';
+                }
+
                 processAndRender();
                 showToast(`Font "${fontName}" loaded & active!`);
             } catch (err) {
@@ -3260,6 +3408,24 @@
         if (colsSliderInput) {
             colsSliderInput.oninput = (e) => setCols(e.target.value);
             colsSliderInput.onchange = (e) => setCols(e.target.value);
+        }
+
+        function setSymbolScale(val) {
+            let scale = parseInt(val, 10);
+            if (isNaN(scale)) scale = 100;
+            scale = Math.max(10, Math.min(300, scale));
+            if (symbolScaleSlider) symbolScaleSlider.value = scale;
+            if (symbolScaleInput) symbolScaleInput.value = scale;
+            processAndRender();
+        }
+
+        if (symbolScaleSlider) symbolScaleSlider.oninput = (e) => setSymbolScale(e.target.value);
+        if (symbolScaleInput) {
+            symbolScaleInput.oninput = (e) => setSymbolScale(e.target.value);
+            symbolScaleInput.onchange = (e) => setSymbolScale(e.target.value);
+        }
+        if (resetSymbolScale) {
+            resetSymbolScale.onclick = () => setSymbolScale(100);
         }
 
         [customRamp, bgColor, contrastSlider, brightSlider].forEach(ctrl => {
@@ -3452,6 +3618,7 @@
             alphaThresholdGroup.style.display = 'flex';
             alphaSlider.value = 20;
             alphaVal.textContent = '20%';
+            setSymbolScale(100);
             resetView();
             showToast('All settings reset to default');
             processAndRender();
@@ -3723,7 +3890,8 @@
 
             const cellW = targetW / cols;
             const cellH = targetH / rows;
-            const fontSize = Math.floor(cellH * 0.92);
+            const scale = (parseInt(symbolScaleSlider ? symbolScaleSlider.value : 100, 10) || 100) / 100;
+            const fontSize = Math.max(2, Math.round(cellH * 0.92 * scale));
 
             ctx.font = `${fontSize}px ${getEffectiveFont()}`;
             ctx.textBaseline = 'middle';
@@ -3819,6 +3987,62 @@
                 showToast(`Sidebar moved to ${nextPos === 'right' ? 'Right' : 'Left'}`);
             };
         }
+
+        // -------------------------------------------------------------
+        // SIDEBAR RESIZING & PERSISTENCE
+        // -------------------------------------------------------------
+        const sidebarResizer = document.getElementById('sidebarResizer');
+        const asideElement = document.querySelector('aside');
+        const SIDEBAR_WIDTH_KEY = 'ascii_sidebar_width';
+        let isResizingSidebar = false;
+
+        function setSidebarWidth(widthPx, save = true) {
+            const clamped = Math.max(260, Math.min(420, Math.round(widthPx)));
+            if (asideElement) {
+                asideElement.style.width = `${clamped}px`;
+            }
+            if (save) {
+                try {
+                    localStorage.setItem(SIDEBAR_WIDTH_KEY, clamped);
+                } catch (e) {}
+            }
+        }
+
+        function initSidebarWidth() {
+            try {
+                const saved = parseInt(localStorage.getItem(SIDEBAR_WIDTH_KEY), 10);
+                if (saved && saved >= 260 && saved <= 420) {
+                    setSidebarWidth(saved, false);
+                }
+            } catch (e) {}
+        }
+
+        if (sidebarResizer) {
+            sidebarResizer.addEventListener('mousedown', (e) => {
+                isResizingSidebar = true;
+                document.body.classList.add('resizing-sidebar');
+                e.preventDefault();
+            });
+
+            sidebarResizer.addEventListener('dblclick', () => {
+                setSidebarWidth(420, true);
+                showToast('Sidebar width reset to default (420px)');
+            });
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isResizingSidebar) return;
+            const isRight = document.body.classList.contains('sidebar-right');
+            const calculatedWidth = isRight ? (window.innerWidth - e.clientX) : e.clientX;
+            setSidebarWidth(calculatedWidth, true);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isResizingSidebar) {
+                isResizingSidebar = false;
+                document.body.classList.remove('resizing-sidebar');
+            }
+        });
 
         if (btnToggleAscii) {
             btnToggleAscii.onclick = () => {
@@ -4236,6 +4460,58 @@
         const STORAGE_KEY = 'ascii_art_creator_user_presets';
 
         const BUILTIN_PRESETS = {
+            default_example_1: {
+                name: 'Example 1 - Goliath',
+                spacing: 43,
+                spacingY: 43,
+                aspectLinked: true,
+                cols: 45,
+                aspect: 1,
+                fontFamily: "'Goliath Beta Encrypted', 'Goliath', monospace",
+                customFontName: "",
+                charPreset: "goliath",
+                customRamp: " .:-=+*#%@",
+                randomChar: false,
+                noBlanks: false,
+                blankRatio: 100,
+                contrast: 0,
+                brightness: 0,
+                invert: true,
+                transparent: true,
+                alphaThreshold: 20,
+                palettePreset: "original_solid",
+                bwThreshold: 71,
+                bwSymbolMode: "ramp",
+                bgColor: "auto",
+                checkerboard: false,
+                symbolScale: 111
+            },
+            default_example_2: {
+                name: 'Example 2 - Commodore 64',
+                spacing: 43,
+                spacingY: 43,
+                aspectLinked: true,
+                cols: 45,
+                aspect: 1,
+                fontFamily: "'Pet Me 64', 'Pet Me', monospace",
+                customFontName: "",
+                charPreset: "retro",
+                customRamp: " .:-=+*#%@",
+                randomChar: false,
+                noBlanks: false,
+                blankRatio: 100,
+                contrast: 0,
+                brightness: 0,
+                invert: false,
+                transparent: true,
+                alphaThreshold: 20,
+                palettePreset: "c64",
+                bwThreshold: 71,
+                bwSymbolMode: "ramp",
+                bgColor: "auto",
+                checkerboard: false,
+                symbolScale: 111
+            },
             default_goliath: {
                 name: 'Goliath Cipher Matrix',
                 cols: 140,
@@ -4304,6 +4580,9 @@
         const newPresetName = document.getElementById('newPresetName');
         const btnSavePreset = document.getElementById('btnSavePreset');
         const btnDeletePreset = document.getElementById('btnDeletePreset');
+        const btnExportPresets = document.getElementById('btnExportPresets');
+        const btnImportPresets = document.getElementById('btnImportPresets');
+        const importPresetsFileInput = document.getElementById('importPresetsFileInput');
 
         function getUserPresets() {
             try {
@@ -4370,7 +4649,8 @@
                 bwThreshold: bwThresholdSlider ? bwThresholdSlider.value : 50,
                 bwSymbolMode: bwSymbolMode ? bwSymbolMode.value : 'solid',
                 bgColor: bgColor.value,
-                checkerboard: checkerboardEnabled
+                checkerboard: checkerboardEnabled,
+                symbolScale: symbolScaleSlider ? parseInt(symbolScaleSlider.value, 10) : 100
             };
         }
 
@@ -4395,6 +4675,11 @@
             }
             if (cfg.cols !== undefined && cfg.spacing === undefined) {
                 setCols(cfg.cols);
+            }
+            if (cfg.symbolScale !== undefined) {
+                setSymbolScale(cfg.symbolScale);
+            } else {
+                setSymbolScale(100);
             }
             
             if (cfg.charPreset !== undefined) {
@@ -4520,12 +4805,114 @@
             };
         }
 
+        function downloadPresetsJson(data, filename) {
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        if (btnExportPresets) {
+            btnExportPresets.onclick = () => {
+                const name = newPresetName ? newPresetName.value.trim() : '';
+                const presets = getUserPresets();
+                if (name) {
+                    presets[name] = getCurrentSettings();
+                    saveUserPresets(presets);
+                    refreshUserPresetsDropdown();
+                    presetSelect.value = `user_${name}`;
+                    if (btnDeletePreset) btnDeletePreset.style.display = 'inline-flex';
+                    newPresetName.value = '';
+                }
+
+                const keys = Object.keys(presets);
+                if (keys.length === 0) {
+                    const fallbackName = 'My Preset';
+                    presets[fallbackName] = getCurrentSettings();
+                    saveUserPresets(presets);
+                    refreshUserPresetsDropdown();
+                    presetSelect.value = `user_${fallbackName}`;
+                    if (btnDeletePreset) btnDeletePreset.style.display = 'inline-flex';
+                }
+
+                const exportData = {
+                    version: '1.0',
+                    exportedAt: new Date().toISOString(),
+                    presets: presets
+                };
+                downloadPresetsJson(exportData, `ASCII_Presets_${Object.keys(presets).length}_saved_${new Date().toISOString().slice(0, 10)}.json`);
+                showToast(`${Object.keys(presets).length} preset(s) saved & exported!`);
+            };
+        }
+
+        if (btnImportPresets && importPresetsFileInput) {
+            btnImportPresets.onclick = () => {
+                importPresetsFileInput.click();
+            };
+
+            importPresetsFileInput.onchange = (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const parsed = JSON.parse(event.target.result);
+                        let toImport = {};
+
+                        if (parsed && typeof parsed === 'object') {
+                            if (parsed.presets && typeof parsed.presets === 'object' && !Array.isArray(parsed.presets)) {
+                                toImport = parsed.presets;
+                            } else if (parsed.cols !== undefined || parsed.spacing !== undefined) {
+                                const name = file.name.replace(/\.[^/.]+$/, "") || "Imported Preset";
+                                toImport[name] = parsed;
+                            } else {
+                                Object.keys(parsed).forEach(k => {
+                                    if (parsed[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k])) {
+                                        toImport[k] = parsed[k];
+                                    }
+                                });
+                            }
+                        }
+
+                        const count = Object.keys(toImport).length;
+                        if (count === 0) {
+                            alert('No valid preset configurations found in this JSON file.');
+                            return;
+                        }
+
+                        const existing = getUserPresets();
+                        Object.assign(existing, toImport);
+                        saveUserPresets(existing);
+                        refreshUserPresetsDropdown();
+
+                        const firstKey = Object.keys(toImport)[0];
+                        if (firstKey) {
+                            presetSelect.value = `user_${firstKey}`;
+                            if (btnDeletePreset) btnDeletePreset.style.display = 'inline-flex';
+                            applySettings(toImport[firstKey]);
+                        }
+
+                        showToast(`Successfully imported ${count} preset(s)!`);
+                    } catch (err) {
+                        alert('Failed to parse JSON file: ' + err.message);
+                    } finally {
+                        importPresetsFileInput.value = '';
+                    }
+                };
+                reader.readAsText(file);
+            };
+        }
+
         // Dynamic "last update [x ago]" timestamp updater
         function updateLastUpdatedLabel() {
             const el = document.getElementById('headerUpdated');
             if (!el) return;
 
-            let updateTime = new Date('2026-09-07T23:05:00+02:00').getTime();
+            let updateTime = new Date('2026-09-07T23:35:00+02:00').getTime();
             if (document.lastModified) {
                 const d = new Date(document.lastModified).getTime();
                 if (!isNaN(d) && d > 1000) updateTime = d;
@@ -4550,7 +4937,7 @@
         // -------------------------------------------------------------
         // CHANGELOG / WHAT'S NEW MODAL LOGIC
         // -------------------------------------------------------------
-        const CURRENT_CHANGELOG_BUILD = '2026-09-07-v1.5.0';
+        const CURRENT_CHANGELOG_BUILD = '2026-09-07-v1.6.0';
         const changelogModalOverlay = document.getElementById('changelogModalOverlay');
         const btnCloseChangelog = document.getElementById('btnCloseChangelog');
         const btnConfirmChangelog = document.getElementById('btnConfirmChangelog');
@@ -4577,6 +4964,9 @@
             changelogModalOverlay.onclick = (e) => {
                 if (e.target === changelogModalOverlay) closeChangelogModal();
             };
+            changelogModalOverlay.addEventListener('wheel', (e) => {
+                e.stopPropagation();
+            }, { passive: false });
         }
 
         // Clicking on "(last update ...)" in the header reopens the changelog anytime
@@ -4600,6 +4990,7 @@
         refreshUserPresetsDropdown();
         updateCheckerboardState();
         initSidebarPosition();
+        initSidebarWidth();
         updateLastUpdatedLabel();
         setInterval(updateLastUpdatedLabel, 30000);
         checkAutoShowChangelog();
