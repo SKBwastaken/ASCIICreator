@@ -1,58 +1,47 @@
 # ASCII Art Creator
 
-> **Vibe coded by [SKB](https://discord.com/users/289503943409664000)**
+Standalone, client-side web application for converting images, animated GIFs, and videos into ASCII art in real time.
 
-A high-performance, standalone, client-side web application for transforming images into retro ASCII art in real-time.
-
-🌐 **Live Demo:** [https://skbwastaken.github.io/ASCIICreator/](https://skbwastaken.github.io/ASCIICreator/)
+Live Demo: https://skbwastaken.github.io/ASCIICreator/
 
 ---
 
-## ✨ Features
+## Features
 
-- **100% Client-Side & Private**: Runs entirely in the browser using HTML5 Canvas. Images are never uploaded to any server.
-- **Offline First**: Zero external CDN dependencies or libraries. Single, self-contained file.
-- **Cyber & Retro Aesthetics**:
-  - Electric Blue (`#2974ff`) cyber accent with frosted glass UI.
-  - Color palettes including Cyber Lime, Retro Amber Terminal, Matrix Green, Commodore 64, CGA, and Custom Colors.
-  - Character spacing control (2px – 200px) with bidirectional column sync for perfectly uniform grids.
-  - Goliath Encrypted font support and standard monospace fonts (Consolas, Menlo, Cascadia Code).
-- **Transparency & Cutoff**:
-  - Real-time transparency checkerboard support (only active when background is set to transparent).
-  - Background cutoff / shadow suppression to eliminate stray glyphs in dark regions.
-- **GIF & Video Real-Time ASCII Engine**:
-  - Drag-and-drop or load **animated GIFs**, **MP4**, **WebM**, and **MOV** videos.
-  - Real-time ASCII rendering at up to 60 FPS using hardware-accelerated video frames and WebCodecs `ImageDecoder`.
-  - Floating frosted-glass **Media Player Bar** with Play/Pause, timeline seekbar, loop toggle, and audio controls (with Spacebar shortcut).
-  - **Offline ASCII Video Export**: Frame-by-frame rendering with progress dialog (no real-time playback recording required) at up to **50 Mbps ultra bitrate** WebM.
+- **Client-Side & Offline First**: Runs entirely in the browser using HTML5 Canvas. Zero server uploads, zero external dependencies or CDNs.
+- **Video & GIF Support**:
+  - Drag-and-drop support for animated GIFs, MP4, WebM, and MOV.
+  - Real-time ASCII playback with interactive seekbar, timestamp display, and mouse wheel frame scrubbing.
+  - Offline frame-by-frame video export: High-bitrate MP4 (H.264/AVC) and WebM export up to 100 Mbps without playback recording.
+  - Direct frame export: Export any paused video or GIF frame as high-resolution PNG.
+- **Resolution Presets**: Full HD (1080p), 4K UHD (2160p, default), and 8K Ultra HD (4320p).
+- **Visual Controls & Palettes**:
+  - Cyber Blue accent (`#4788ff`) with frosted glass UI.
+  - Color palettes: Original (Solid & Average), Monochrome, Matrix Green, Cyberpunk, CGA, ZX Spectrum, and Custom Colors.
+  - Custom font support (.ttf, .otf, .woff, Goliath Encrypted, and system monospace fonts).
+  - Background transparency cutoff and shadow fill controls.
 - **Flexible Workspace**:
-  - **Sidebar Position Toggle**: Switch between **Left** and **Right** sidebar layouts with persistent browser state.
-- **High-Resolution Exports**:
-  - Single-click export dropdown: **Full HD (1080p)**, **4K UHD (2160p, default)**, and **8K Ultra HD (4320p)** PNG.
-  - Copy raw ASCII text directly to clipboard.
-- **Preset System**:
-  - Save and load your custom configs directly via `localStorage`.
-- **Mobile Responsive**:
-  - Interactive split view with sticky canvas viewport and fluid controls for smartphones and tablets.
+  - Sidebar position toggle (Left / Right) with persistent preference storage.
+  - Canvas pan and cursor-centered zoom.
+  - Custom user preset saving via `localStorage`.
+- **Changelog Modal**: Displays recent updates and version info on first visit after an update.
 
 ---
 
-## 🚀 Usage
+## Usage
 
-### Run Online
-Visit the live GitHub Pages app:  
-👉 **[https://skbwastaken.github.io/ASCIICreator/](https://skbwastaken.github.io/ASCIICreator/)**
+### Online
+https://skbwastaken.github.io/ASCIICreator/
 
-### Run Locally
-Simply download or clone this repository and double-click `index.html` in any modern web browser.
-
+### Local
 ```bash
 git clone https://github.com/SKBwastaken/ASCIICreator.git
 cd ASCIICreator
-# Open index.html in your favorite browser
+# Open index.html in any modern browser
 ```
 
 ---
 
-## 👤 Author
-* **SKB** — [Discord](https://discord.com/users/289503943409664000)
+## Credits
+- Author: SKB (https://discord.com/users/289503943409664000)
+- Flexible sidebar contribution: @stillabstract
