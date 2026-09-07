@@ -1543,10 +1543,7 @@
                             <optgroup label="Default Presets" id="defaultPresetsOptgroup">
                                 <option value="default_example_1">Example 1 - Commodore 64</option>
                                 <option value="default_example_2">Example 2 - Goliath</option>
-                                <option value="default_goliath">Goliath Cipher Matrix</option>
-                                <option value="default_retro">Retro Amber Terminal</option>
-                                <option value="default_transparent">Transparent Silhouette</option>
-                                <option value="default_hires">Ultra HD High-Density</option>
+                                <option value="default_example_3">Example 3 - RGB</option>
                             </optgroup>
                             <optgroup label="My Saved Presets" id="userPresetsOptgroup">
                                 <!-- Dynamic from localStorage -->
@@ -3272,6 +3269,15 @@
                     updateCheckerboardState();
                 }
                 showToast('Goliath font & neon lime palette selected');
+            } else {
+                if (palettePreset && palettePreset.value === 'goliath_lime') {
+                    palettePreset.value = 'original_solid';
+                    updatePalettePreview();
+                    showToast('Original Colors (True RGB) selected');
+                }
+                if (charPreset && charPreset.value === 'goliath') {
+                    charPreset.value = 'retro';
+                }
             }
 
             processAndRender();
@@ -3292,6 +3298,14 @@
                     if (bgColor) {
                         bgColor.value = '#000000';
                         updateCheckerboardState();
+                    }
+                } else {
+                    if (palettePreset && palettePreset.value === 'goliath_lime') {
+                        palettePreset.value = 'original_solid';
+                        updatePalettePreview();
+                    }
+                    if (charPreset && charPreset.value === 'goliath') {
+                        charPreset.value = 'retro';
                     }
                 }
                 const available = isFontAvailable(name);
@@ -4652,65 +4666,31 @@
                 checkerboard: false,
                 symbolScale: 111
             },
-            default_goliath: {
-                name: 'Goliath Cipher Matrix',
-                cols: 140,
-                aspect: 0.5,
-                fontFamily: "'Goliath Beta Encrypted', 'Goliath', monospace",
-                charPreset: 'goliath',
-                randomChar: true,
-                palettePreset: 'goliath_lime',
-                bgColor: '#000000',
-                contrast: 20,
-                brightness: 0,
-                invert: false,
+            default_example_3: {
+                name: 'Example 3 - RGB',
+                spacing: 27,
+                spacingY: 27,
+                aspectLinked: true,
+                cols: 71,
+                aspect: 1,
+                fontFamily: "'C64 Pro Mono', monospace",
+                customFontName: "",
+                charPreset: "dense",
+                customRamp: " .:-=+*#%@",
+                randomChar: false,
+                noBlanks: false,
+                blankRatio: 100,
+                contrast: 100,
+                brightness: -25,
+                invert: true,
                 transparent: true,
-                alphaThreshold: 20
-            },
-            default_retro: {
-                name: 'Retro Amber Terminal',
-                cols: 120,
-                aspect: 0.5,
-                fontFamily: 'Consolas, monospace',
-                charPreset: 'retro',
-                randomChar: false,
-                palettePreset: 'amber_terminal',
-                bgColor: '#000000',
-                contrast: 25,
-                brightness: 5,
-                invert: false,
-                transparent: false,
-                alphaThreshold: 20
-            },
-            default_hires: {
-                name: 'Ultra HD High-Density',
-                cols: 220,
-                aspect: 0.45,
-                fontFamily: 'Consolas, monospace',
-                charPreset: 'dense',
-                randomChar: false,
-                palettePreset: 'original_solid',
-                bgColor: '#000000',
-                contrast: 15,
-                brightness: 0,
-                invert: false,
-                transparent: false,
-                alphaThreshold: 20
-            },
-            default_transparent: {
-                name: 'Transparent Silhouette',
-                cols: 120,
-                aspect: 0.5,
-                fontFamily: "'Goliath Beta Encrypted', 'Goliath', monospace",
-                charPreset: 'goliath',
-                randomChar: false,
-                palettePreset: 'original_solid',
-                bgColor: 'transparent',
-                contrast: 30,
-                brightness: 0,
-                invert: false,
-                transparent: true,
-                alphaThreshold: 25
+                alphaThreshold: 20,
+                palettePreset: "original_solid",
+                bwThreshold: 71,
+                bwSymbolMode: "ramp",
+                bgColor: "#000000",
+                checkerboard: false,
+                symbolScale: 105
             }
         };
 
