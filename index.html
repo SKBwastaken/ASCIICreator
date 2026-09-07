@@ -1279,6 +1279,59 @@
             transform: scale(1.03);
         }
 
+        /* -------------------------------------------------------------
+           PRESET DELETE OVERLAY (CONTAINED TO PRESETS CATEGORY CARD ONLY)
+        ------------------------------------------------------------- */
+        .preset-delete-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 11, 16, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 16px;
+            border-radius: inherit;
+            animation: presetOverlayFadeIn 0.16s ease;
+        }
+
+        @keyframes presetOverlayFadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .preset-delete-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            user-select: none;
+        }
+
+        .btn-danger-red {
+            background: #dc2626 !important;
+            color: #ffffff !important;
+            border: 1px solid #ef4444 !important;
+            font-weight: 600 !important;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.35) !important;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-danger-red:hover {
+            background: #b91c1c !important;
+            border-color: #f87171 !important;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.55) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger-red:active {
+            transform: translateY(0);
+        }
+
         canvas#previewCanvas {
             max-width: 92%;
             max-height: 92%;
@@ -1450,7 +1503,31 @@
             </div>
 
             <!-- Presets Manager (LocalStorage) -->
-            <div class="glass-card">
+            <div class="glass-card" id="presetsControlCard" style="position: relative;">
+                <!-- Preset Delete Confirmation Overlay (Contained ONLY to Presets category card) -->
+                <div class="preset-delete-overlay" id="presetDeleteOverlay" style="display: none;">
+                    <div class="preset-delete-box">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 7px; color: #f87171; font-weight: 700; font-size: 0.82rem;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span id="presetDeleteTitle">Preset löschen?</span>
+                        </div>
+                        <p id="presetDeleteMessage" style="font-size: 0.74rem; color: var(--text-muted); margin: 6px 0 12px 0; line-height: 1.35; text-align: center; word-break: break-word;">
+                            Möchtest du dieses Preset wirklich löschen?
+                        </p>
+                        <div style="display: flex; gap: 8px; justify-content: center; width: 100%;">
+                            <button type="button" class="btn btn-secondary" id="btnCancelDeletePreset" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center;">
+                                Canceln
+                            </button>
+                            <button type="button" class="btn btn-danger-red" id="btnConfirmDeletePreset" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center;">
+                                Löschen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-header" style="justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -1464,8 +1541,8 @@
                         <select id="presetSelect" style="flex: 1;">
                             <option value="" disabled selected>Choose a preset to load...</option>
                             <optgroup label="Default Presets" id="defaultPresetsOptgroup">
-                                <option value="default_example_1">Example 1 - Goliath</option>
-                                <option value="default_example_2">Example 2 - Commodore 64</option>
+                                <option value="default_example_1">Example 1 - Commodore 64</option>
+                                <option value="default_example_2">Example 2 - Goliath</option>
                                 <option value="default_goliath">Goliath Cipher Matrix</option>
                                 <option value="default_retro">Retro Amber Terminal</option>
                                 <option value="default_transparent">Transparent Silhouette</option>
@@ -2005,9 +2082,9 @@
                                 <span>Changelog</span>
                             </div>
                             <div class="changelog-meta">
-                                <a href="https://github.com/SKBwastaken/ASCIICreator" target="_blank" rel="noopener noreferrer" class="changelog-build-badge" title="Open repository on GitHub">Build 2026.09.07</a>
+                                <a href="https://github.com/SKBwastaken/ASCIICreator" target="_blank" rel="noopener noreferrer" class="changelog-build-badge" title="Open repository on GitHub">Build 2026.09.07.1</a>
                                 <span>•</span>
-                                <span>September 7, 2026 • 19:30 UTC+2</span>
+                                <span>September 7, 2026 • 23:55 UTC+2</span>
                             </div>
                         </div>
                         <button class="changelog-close-btn" id="btnCloseChangelog" title="Close">
@@ -2016,11 +2093,43 @@
                     </div>
 
                     <div class="changelog-body">
-                        <!-- v1.6.0 (Latest) -->
+                        <!-- v1.6.1 (Patch) -->
+                        <div class="changelog-version-block">
+                            <div class="changelog-version-tag">
+                                <span>Version 1.6.1</span>
+                                <span class="badge-latest">Latest Update</span>
+                            </div>
+                            <div class="changelog-list">
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Scoped Preset Delete Confirmation Dialog</span>
+                                        <span class="changelog-item-desc">Deleting a saved preset now triggers a contained, non-intrusive card overlay directly over the Presets category card with "Canceln" and a prominent red "Löschen" button, replacing intrusive browser popups without dimming the entire screen.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Calm Animated Tab Title & Asterisk Flash</span>
+                                        <span class="changelog-item-desc">Browser tab title now features an eye-friendly, calm unscrambling effect (1.25s per revealed letter), followed by 4 gentle flashes between asterisks (*****************) and "ASCII ART CREATOR" with a smooth looping interval.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Preset Layout Stability & Random Example Selection</span>
+                                        <span class="changelog-item-desc">Fixed card height and overflow behavior to guarantee Presets & Configs never visually collapses. Curated example presets now dynamically shuffle on application reload.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="changelog-divider"></div>
+
+                        <!-- v1.6.0 -->
                         <div class="changelog-version-block">
                             <div class="changelog-version-tag">
                                 <span>Version 1.6.0</span>
-                                <span class="badge-latest">Latest Update</span>
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
@@ -2034,7 +2143,7 @@
                                     <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Curated Example Presets</span>
-                                        <span class="changelog-item-desc">Added "Example 1 - Goliath" (auto-loaded with the Example Picture) and "Example 2 - Commodore 64", permanently pinned at the top of Default Presets.</span>
+                                        <span class="changelog-item-desc">Added "Example 1 - Commodore 64" and "Example 2 - Goliath", permanently pinned at the top of Default Presets with random example preset selection on reload.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
@@ -2888,9 +2997,15 @@
             showToast('Loading example picture & preset...');
             const onExampleReady = (imageElement) => {
                 applyLoadedImage(imageElement, 'Example picture & preset loaded');
-                if (typeof BUILTIN_PRESETS !== 'undefined' && BUILTIN_PRESETS.default_example_1) {
-                    applySettings(BUILTIN_PRESETS.default_example_1);
-                    if (presetSelect) presetSelect.value = 'default_example_1';
+                const activeKey = presetSelect ? presetSelect.value : null;
+                const isExampleActive = activeKey && (
+                    activeKey.startsWith('default_example_') || 
+                    (typeof BUILTIN_PRESETS !== 'undefined' && BUILTIN_PRESETS[activeKey] && BUILTIN_PRESETS[activeKey].name && BUILTIN_PRESETS[activeKey].name.toLowerCase().startsWith('example '))
+                );
+                const targetKey = isExampleActive ? activeKey : (typeof getRandomExamplePresetKey === 'function' ? getRandomExamplePresetKey() : 'default_example_1');
+                if (typeof BUILTIN_PRESETS !== 'undefined' && BUILTIN_PRESETS[targetKey]) {
+                    applySettings(BUILTIN_PRESETS[targetKey]);
+                    if (presetSelect) presetSelect.value = targetKey;
                 }
             };
 
@@ -4461,33 +4576,7 @@
 
         const BUILTIN_PRESETS = {
             default_example_1: {
-                name: 'Example 1 - Goliath',
-                spacing: 43,
-                spacingY: 43,
-                aspectLinked: true,
-                cols: 45,
-                aspect: 1,
-                fontFamily: "'Goliath Beta Encrypted', 'Goliath', monospace",
-                customFontName: "",
-                charPreset: "goliath",
-                customRamp: " .:-=+*#%@",
-                randomChar: false,
-                noBlanks: false,
-                blankRatio: 100,
-                contrast: 0,
-                brightness: 0,
-                invert: true,
-                transparent: true,
-                alphaThreshold: 20,
-                palettePreset: "original_solid",
-                bwThreshold: 71,
-                bwSymbolMode: "ramp",
-                bgColor: "auto",
-                checkerboard: false,
-                symbolScale: 111
-            },
-            default_example_2: {
-                name: 'Example 2 - Commodore 64',
+                name: 'Example 1 - Commodore 64',
                 spacing: 43,
                 spacingY: 43,
                 aspectLinked: true,
@@ -4506,6 +4595,32 @@
                 transparent: true,
                 alphaThreshold: 20,
                 palettePreset: "c64",
+                bwThreshold: 71,
+                bwSymbolMode: "ramp",
+                bgColor: "auto",
+                checkerboard: false,
+                symbolScale: 111
+            },
+            default_example_2: {
+                name: 'Example 2 - Goliath',
+                spacing: 43,
+                spacingY: 43,
+                aspectLinked: true,
+                cols: 45,
+                aspect: 1,
+                fontFamily: "'Goliath Beta Encrypted', 'Goliath', monospace",
+                customFontName: "",
+                charPreset: "goliath",
+                customRamp: " .:-=+*#%@",
+                randomChar: false,
+                noBlanks: false,
+                blankRatio: 100,
+                contrast: 0,
+                brightness: 0,
+                invert: true,
+                transparent: true,
+                alphaThreshold: 20,
+                palettePreset: "original_solid",
                 bwThreshold: 71,
                 bwSymbolMode: "ramp",
                 bgColor: "auto",
@@ -4583,6 +4698,21 @@
         const btnExportPresets = document.getElementById('btnExportPresets');
         const btnImportPresets = document.getElementById('btnImportPresets');
         const importPresetsFileInput = document.getElementById('importPresetsFileInput');
+
+        function getExamplePresetKeys() {
+            if (typeof BUILTIN_PRESETS === 'undefined') return [];
+            return Object.keys(BUILTIN_PRESETS).filter(key => {
+                const p = BUILTIN_PRESETS[key];
+                return key.startsWith('default_example_') || 
+                       (p && p.name && p.name.toLowerCase().startsWith('example '));
+            });
+        }
+
+        function getRandomExamplePresetKey() {
+            const keys = getExamplePresetKeys();
+            if (!keys || keys.length === 0) return null;
+            return keys[Math.floor(Math.random() * keys.length)];
+        }
 
         function getUserPresets() {
             try {
@@ -4785,13 +4915,56 @@
             };
         }
 
+        // -------------------------------------------------------------
+        // PRESET DELETE OVERLAY (SCOPED ONLY TO PRESETS CATEGORY CARD)
+        // -------------------------------------------------------------
+        const presetDeleteOverlay = document.getElementById('presetDeleteOverlay');
+        const presetDeleteTitle = document.getElementById('presetDeleteTitle');
+        const presetDeleteMessage = document.getElementById('presetDeleteMessage');
+        const btnCancelDeletePreset = document.getElementById('btnCancelDeletePreset');
+        const btnConfirmDeletePreset = document.getElementById('btnConfirmDeletePreset');
+
+        let activeDeletePresetCallback = null;
+
+        function showPresetDeleteDialog(name, onConfirm) {
+            if (!presetDeleteOverlay) return;
+            if (presetDeleteTitle) presetDeleteTitle.textContent = 'Preset löschen?';
+            if (presetDeleteMessage) presetDeleteMessage.textContent = `Möchtest du das Preset "${name}" wirklich löschen?`;
+
+            activeDeletePresetCallback = onConfirm;
+            presetDeleteOverlay.style.display = 'flex';
+        }
+
+        function closePresetDeleteDialog() {
+            if (presetDeleteOverlay) presetDeleteOverlay.style.display = 'none';
+            activeDeletePresetCallback = null;
+        }
+
+        if (btnCancelDeletePreset) {
+            btnCancelDeletePreset.onclick = () => closePresetDeleteDialog();
+        }
+
+        if (btnConfirmDeletePreset) {
+            btnConfirmDeletePreset.onclick = () => {
+                const cb = activeDeletePresetCallback;
+                closePresetDeleteDialog();
+                if (typeof cb === 'function') cb();
+            };
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && presetDeleteOverlay && presetDeleteOverlay.style.display !== 'none') {
+                closePresetDeleteDialog();
+            }
+        });
+
         if (btnDeletePreset) {
             btnDeletePreset.onclick = () => {
                 const val = presetSelect.value;
                 if (!val || !val.startsWith('user_')) return;
                 const name = val.substring(5);
 
-                if (confirm(`Delete saved preset "${name}"?`)) {
+                showPresetDeleteDialog(name, () => {
                     const presets = getUserPresets();
                     delete presets[name];
                     saveUserPresets(presets);
@@ -4800,8 +4973,8 @@
 
                     presetSelect.value = '';
                     btnDeletePreset.style.display = 'none';
-                    showToast(`Preset "${name}" deleted`);
-                }
+                    showToast(`Preset "${name}" gelöscht`);
+                });
             };
         }
 
@@ -4937,7 +5110,7 @@
         // -------------------------------------------------------------
         // CHANGELOG / WHAT'S NEW MODAL LOGIC
         // -------------------------------------------------------------
-        const CURRENT_CHANGELOG_BUILD = '2026-09-07-v1.6.0';
+        const CURRENT_CHANGELOG_BUILD = '2026-09-07-v1.6.1';
         const changelogModalOverlay = document.getElementById('changelogModalOverlay');
         const btnCloseChangelog = document.getElementById('btnCloseChangelog');
         const btnConfirmChangelog = document.getElementById('btnConfirmChangelog');
@@ -4986,14 +5159,108 @@
             } catch (e) {}
         }
 
+        // -------------------------------------------------------------
+        // ANIMATED TAB TITLE (SCRAMBLE DECRYPT, ASTERISK BLINK & REPEAT)
+        // -------------------------------------------------------------
+        let titleAnimTimer = null;
+        let titleBlinkTimer = null;
+        let titleLoopTimer = null;
+
+        function startTabTitleAnimation() {
+            if (titleAnimTimer) clearInterval(titleAnimTimer);
+            if (titleBlinkTimer) clearInterval(titleBlinkTimer);
+            if (titleLoopTimer) clearTimeout(titleLoopTimer);
+
+            const target = "ASCII ART CREATOR";
+            const asterisks = "*".repeat(target.length);
+            const glyphs = "!@#$%^&*()_+-=[]{}<>?/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const len = target.length;
+            let resolvedCount = 0;
+            let lastRevealTime = Date.now();
+
+            // Slower, deliberate pacing: 1.25s per character reveal
+            const REVEAL_DELAY_MS = 1250;
+
+            titleAnimTimer = setInterval(() => {
+                const now = Date.now();
+
+                if (now - lastRevealTime >= REVEAL_DELAY_MS) {
+                    lastRevealTime = now;
+                    if (resolvedCount < len) {
+                        resolvedCount++;
+                    }
+                    while (resolvedCount < len && target[resolvedCount] === ' ') {
+                        resolvedCount++;
+                    }
+                }
+
+                const display = [];
+                for (let i = 0; i < len; i++) {
+                    if (i < resolvedCount) {
+                        display.push(target[i]);
+                    } else if (target[i] === ' ') {
+                        display.push(' ');
+                    } else {
+                        display.push(glyphs[Math.floor(Math.random() * glyphs.length)]);
+                    }
+                }
+
+                document.title = display.join('');
+
+                if (resolvedCount >= len) {
+                    clearInterval(titleAnimTimer);
+                    titleAnimTimer = null;
+                    document.title = target;
+
+                    // Phase 2: Blink 4 times (1s asterisks, 1s title, 8 toggles total)
+                    let blinkCount = 0;
+                    titleBlinkTimer = setInterval(() => {
+                        blinkCount++;
+                        if (blinkCount % 2 === 1) {
+                            document.title = asterisks;
+                        } else {
+                            document.title = target;
+                        }
+
+                        if (blinkCount >= 8) {
+                            clearInterval(titleBlinkTimer);
+                            titleBlinkTimer = null;
+                            document.title = target;
+
+                            // Phase 3: Pause briefly (2.5s) on ASCII ART CREATOR, then repeat the animation
+                            titleLoopTimer = setTimeout(() => {
+                                startTabTitleAnimation();
+                            }, 2500);
+                        }
+                    }, 1000);
+                }
+            }, 260);
+        }
+
         // Initialize user presets on page load
         refreshUserPresetsDropdown();
+
+        // Randomly select and load one of the Example Presets on page reload/startup
+        const initialExampleKey = getRandomExamplePresetKey();
+        if (initialExampleKey && typeof BUILTIN_PRESETS !== 'undefined' && BUILTIN_PRESETS[initialExampleKey]) {
+            applySettings(BUILTIN_PRESETS[initialExampleKey]);
+            if (presetSelect) presetSelect.value = initialExampleKey;
+        }
+
         updateCheckerboardState();
         initSidebarPosition();
         initSidebarWidth();
         updateLastUpdatedLabel();
         setInterval(updateLastUpdatedLabel, 30000);
         checkAutoShowChangelog();
+        startTabTitleAnimation();
+
+        const titleH1 = document.querySelector('.header-title-box h1');
+        if (titleH1) {
+            titleH1.style.cursor = 'pointer';
+            titleH1.title = 'Click to replay title animation';
+            titleH1.onclick = () => startTabTitleAnimation();
+        }
 
     </script>
 </body>
