@@ -343,6 +343,119 @@
             height: 10px;
         }
 
+        .control-num-input {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--accent-border);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 5px;
+            width: 52px;
+            text-align: right;
+            outline: none;
+            transition: all 0.18s ease;
+            -moz-appearance: textfield;
+        }
+
+        .control-num-input::-webkit-outer-spin-button,
+        .control-num-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .control-num-input:hover {
+            border-color: var(--accent);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .control-num-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.85);
+        }
+
+        .aspect-input {
+            width: 62px;
+            text-align: center;
+        }
+
+        .number-input-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .unit-suffix {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            user-select: none;
+        }
+
+        .aspect-stepper-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1px 2px;
+        }
+
+        .btn-stepper {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 18px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            line-height: 1;
+            padding: 0;
+            user-select: none;
+        }
+
+        .btn-stepper:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .btn-link-aspect {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .btn-link-aspect.active {
+            background: var(--accent-dim);
+            border-color: var(--accent-border);
+            color: var(--accent);
+        }
+
+        .btn-link-aspect:hover {
+            border-color: var(--accent);
+        }
+
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
@@ -1358,11 +1471,15 @@
                     Grid & Resolution
                 </div>
 
+                <!-- Horizontal Spacing (X) -->
                 <div class="control-group">
                     <div class="control-label">
-                        <span>Space Between Characters (Pixels)</span>
+                        <span>Horizontal Spacing (X)</span>
                         <div class="label-meta">
-                            <span class="control-value" id="spacingVal">14 px</span>
+                            <div class="number-input-wrapper">
+                                <input type="number" id="spacingSliderInput" class="control-num-input" min="2" max="200" step="1" value="14">
+                                <span class="unit-suffix">px</span>
+                            </div>
                             <button class="btn-reset-mini" id="resetSpacing" title="Default: 14 px">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                                 Reset
@@ -1372,11 +1489,36 @@
                     <input type="range" id="spacingSlider" min="2" max="200" value="14" step="1">
                 </div>
 
+                <!-- Vertical Spacing (Y) -->
+                <div class="control-group">
+                    <div class="control-label">
+                        <div style="display: inline-flex; align-items: center; gap: 6px;">
+                            <span>Vertical Spacing (Y)</span>
+                            <button class="btn-link-aspect active" id="btnLinkAspect" title="Link Spacing X & Y (Keeps Aspect Ratio)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                <span id="linkAspectText">Linked</span>
+                            </button>
+                        </div>
+                        <div class="label-meta">
+                            <div class="number-input-wrapper">
+                                <input type="number" id="spacingYSliderInput" class="control-num-input" min="2" max="200" step="1" value="30">
+                                <span class="unit-suffix">px</span>
+                            </div>
+                            <button class="btn-reset-mini" id="resetSpacingY" title="Reset Vertical Spacing">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                    <input type="range" id="spacingYSlider" min="2" max="200" value="30" step="1">
+                </div>
+
+                <!-- Characters per Row (Columns) -->
                 <div class="control-group">
                     <div class="control-label">
                         <span>Characters per Row (Columns)</span>
                         <div class="label-meta">
-                            <span class="control-value" id="colsVal">137</span>
+                            <input type="number" id="colsSliderInput" class="control-num-input" min="10" max="480" step="1" value="137">
                             <button class="btn-reset-mini" id="resetCols" title="Default: 137 columns">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                                 Reset
@@ -1386,18 +1528,23 @@
                     <input type="range" id="colsSlider" min="10" max="480" value="137" step="1">
                 </div>
 
+                <!-- Character Aspect Ratio -->
                 <div class="control-group">
                     <div class="control-label">
                         <span>Character Aspect Ratio</span>
                         <div class="label-meta">
-                            <span class="control-value" id="aspectVal">0.46</span>
-                            <button class="btn-reset-mini" id="resetAspect" title="Default: 0.46">
+                            <div class="aspect-stepper-group">
+                                <button class="btn-stepper" id="btnAspectDec" title="Decrease Aspect Ratio (-0.005)">−</button>
+                                <input type="number" id="aspectNumInput" class="control-num-input aspect-input" min="0.100" max="2.500" step="0.001" value="0.460">
+                                <button class="btn-stepper" id="btnAspectInc" title="Increase Aspect Ratio (+0.005)">+</button>
+                            </div>
+                            <button class="btn-reset-mini" id="resetAspect" title="Default: 0.460">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                                 Reset
                             </button>
                         </div>
                     </div>
-                    <input type="range" id="aspectSlider" min="0.3" max="1.5" value="0.46" step="0.01">
+                    <input type="range" id="aspectSlider" min="0.100" max="2.500" value="0.460" step="0.001">
                 </div>
             </div>
 
@@ -1711,6 +1858,13 @@
                                 <span class="badge-latest">Latest Update</span>
                             </div>
                             <div class="changelog-list">
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">Dual-Axis Spacing & Fine Aspect Ratio Control</span>
+                                        <span class="changelog-item-desc">Independent horizontal (X) and vertical (Y) character spacing sliders with an aspect link toggle, direct numeric typing, and precision aspect steppers.</span>
+                                    </div>
+                                </div>
                                 <div class="changelog-item">
                                     <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
@@ -2074,11 +2228,37 @@
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const spacingSlider = document.getElementById('spacingSlider');
-        const spacingVal = document.getElementById('spacingVal');
+        const spacingSliderInput = document.getElementById('spacingSliderInput');
+        const spacingYSlider = document.getElementById('spacingYSlider');
+        const spacingYSliderInput = document.getElementById('spacingYSliderInput');
+        const btnLinkAspect = document.getElementById('btnLinkAspect');
+        const linkAspectText = document.getElementById('linkAspectText');
+        const resetSpacingY = document.getElementById('resetSpacingY');
         const colsSlider = document.getElementById('colsSlider');
-        const colsVal = document.getElementById('colsVal');
+        const colsSliderInput = document.getElementById('colsSliderInput');
         const aspectSlider = document.getElementById('aspectSlider');
-        const aspectVal = document.getElementById('aspectVal');
+        const aspectNumInput = document.getElementById('aspectNumInput');
+        const btnAspectDec = document.getElementById('btnAspectDec');
+        const btnAspectInc = document.getElementById('btnAspectInc');
+
+        let isAspectLinked = true;
+
+        // Compatibility proxies for any legacy references
+        const spacingVal = {
+            set textContent(v) { if (spacingSliderInput) spacingSliderInput.value = parseInt(v, 10) || 14; },
+            get textContent() { return spacingSliderInput ? `${spacingSliderInput.value} px` : '14 px'; }
+        };
+        const colsVal = {
+            set textContent(v) { if (colsSliderInput) colsSliderInput.value = parseInt(v, 10) || 137; },
+            get textContent() { return colsSliderInput ? colsSliderInput.value : '137'; }
+        };
+        const aspectVal = {
+            set textContent(v) {
+                const n = parseFloat(v) || 0.46;
+                if (aspectNumInput) aspectNumInput.value = n.toFixed(3);
+            },
+            get textContent() { return aspectNumInput ? aspectNumInput.value : '0.460'; }
+        };
         const charPreset = document.getElementById('charPreset');
         const customRampGroup = document.getElementById('customRampGroup');
         const customRamp = document.getElementById('customRamp');
@@ -2750,32 +2930,149 @@
             }
         };
 
-        [aspectSlider, customRamp, bgColor, contrastSlider, brightSlider].forEach(ctrl => {
+        function setAspect(val, syncOthers = true) {
+            let num = parseFloat(val);
+            if (isNaN(num)) num = 0.46;
+            num = Math.max(0.05, Math.min(3.0, num));
+            aspectSlider.value = num;
+            if (aspectNumInput) aspectNumInput.value = num.toFixed(3);
+
+            if (syncOthers) {
+                const spX = parseInt(spacingSlider.value, 10) || 14;
+                const newSpY = Math.max(2, Math.min(200, Math.round(spX / num)));
+                if (spacingYSlider) spacingYSlider.value = newSpY;
+                if (spacingYSliderInput) spacingYSliderInput.value = newSpY;
+            }
+            processAndRender();
+        }
+
+        function setSpacingX(val) {
+            let spX = parseInt(val, 10);
+            if (isNaN(spX)) spX = 14;
+            spX = Math.max(2, Math.min(200, spX));
+            spacingSlider.value = spX;
+            if (spacingSliderInput) spacingSliderInput.value = spX;
+
+            const newCols = Math.max(10, Math.min(480, Math.round(1920 / spX)));
+            colsSlider.value = newCols;
+            if (colsSliderInput) colsSliderInput.value = newCols;
+
+            if (isAspectLinked) {
+                const charAspect = parseFloat(aspectSlider.value) || 0.46;
+                const newSpY = Math.max(2, Math.min(200, Math.round(spX / charAspect)));
+                if (spacingYSlider) spacingYSlider.value = newSpY;
+                if (spacingYSliderInput) spacingYSliderInput.value = newSpY;
+            } else {
+                const spY = parseInt(spacingYSlider ? spacingYSlider.value : 30, 10) || 30;
+                const newAspect = Math.max(0.05, Math.min(3.0, Number((spX / spY).toFixed(3))));
+                aspectSlider.value = newAspect;
+                if (aspectNumInput) aspectNumInput.value = newAspect.toFixed(3);
+            }
+            processAndRender();
+        }
+
+        function setSpacingY(val) {
+            let spY = parseInt(val, 10);
+            if (isNaN(spY)) spY = 30;
+            spY = Math.max(2, Math.min(200, spY));
+            if (spacingYSlider) spacingYSlider.value = spY;
+            if (spacingYSliderInput) spacingYSliderInput.value = spY;
+
+            if (isAspectLinked) {
+                const charAspect = parseFloat(aspectSlider.value) || 0.46;
+                const newSpX = Math.max(2, Math.min(200, Math.round(spY * charAspect)));
+                spacingSlider.value = newSpX;
+                if (spacingSliderInput) spacingSliderInput.value = newSpX;
+                const newCols = Math.max(10, Math.min(480, Math.round(1920 / newSpX)));
+                colsSlider.value = newCols;
+                if (colsSliderInput) colsSliderInput.value = newCols;
+            } else {
+                const spX = parseInt(spacingSlider.value, 10) || 14;
+                const newAspect = Math.max(0.05, Math.min(3.0, Number((spX / spY).toFixed(3))));
+                aspectSlider.value = newAspect;
+                if (aspectNumInput) aspectNumInput.value = newAspect.toFixed(3);
+            }
+            processAndRender();
+        }
+
+        function setCols(val) {
+            let cols = parseInt(val, 10);
+            if (isNaN(cols)) cols = 137;
+            cols = Math.max(10, Math.min(480, cols));
+            colsSlider.value = cols;
+            if (colsSliderInput) colsSliderInput.value = cols;
+
+            const newSpX = Math.max(2, Math.min(200, Math.round(1920 / cols)));
+            spacingSlider.value = newSpX;
+            if (spacingSliderInput) spacingSliderInput.value = newSpX;
+
+            if (isAspectLinked) {
+                const charAspect = parseFloat(aspectSlider.value) || 0.46;
+                const newSpY = Math.max(2, Math.min(200, Math.round(newSpX / charAspect)));
+                if (spacingYSlider) spacingYSlider.value = newSpY;
+                if (spacingYSliderInput) spacingYSliderInput.value = newSpY;
+            } else {
+                const spY = parseInt(spacingYSlider ? spacingYSlider.value : 30, 10) || 30;
+                const newAspect = Math.max(0.05, Math.min(3.0, Number((newSpX / spY).toFixed(3))));
+                aspectSlider.value = newAspect;
+                if (aspectNumInput) aspectNumInput.value = newAspect.toFixed(3);
+            }
+            processAndRender();
+        }
+
+        aspectSlider.oninput = (e) => setAspect(e.target.value);
+        if (aspectNumInput) {
+            aspectNumInput.oninput = (e) => setAspect(e.target.value);
+            aspectNumInput.onchange = (e) => setAspect(e.target.value);
+        }
+        if (btnAspectDec) {
+            btnAspectDec.onclick = () => {
+                const cur = parseFloat(aspectSlider.value) || 0.46;
+                setAspect((cur - 0.005).toFixed(3));
+            };
+        }
+        if (btnAspectInc) {
+            btnAspectInc.onclick = () => {
+                const cur = parseFloat(aspectSlider.value) || 0.46;
+                setAspect((cur + 0.005).toFixed(3));
+            };
+        }
+
+        spacingSlider.oninput = (e) => setSpacingX(e.target.value);
+        if (spacingSliderInput) {
+            spacingSliderInput.oninput = (e) => setSpacingX(e.target.value);
+            spacingSliderInput.onchange = (e) => setSpacingX(e.target.value);
+        }
+
+        if (spacingYSlider) spacingYSlider.oninput = (e) => setSpacingY(e.target.value);
+        if (spacingYSliderInput) {
+            spacingYSliderInput.oninput = (e) => setSpacingY(e.target.value);
+            spacingYSliderInput.onchange = (e) => setSpacingY(e.target.value);
+        }
+
+        if (btnLinkAspect) {
+            btnLinkAspect.onclick = () => {
+                isAspectLinked = !isAspectLinked;
+                btnLinkAspect.classList.toggle('active', isAspectLinked);
+                if (linkAspectText) linkAspectText.textContent = isAspectLinked ? 'Linked' : 'Unlinked';
+                btnLinkAspect.title = isAspectLinked ? 'Link Spacing X & Y (Keeps Aspect Ratio)' : 'Unlinked Spacing (Independent X & Y)';
+                showToast(isAspectLinked ? 'Aspect ratio linked' : 'Aspect ratio unlinked');
+            };
+        }
+
+        colsSlider.oninput = (e) => setCols(e.target.value);
+        if (colsSliderInput) {
+            colsSliderInput.oninput = (e) => setCols(e.target.value);
+            colsSliderInput.onchange = (e) => setCols(e.target.value);
+        }
+
+        [customRamp, bgColor, contrastSlider, brightSlider].forEach(ctrl => {
             ctrl.oninput = () => {
-                aspectVal.textContent = aspectSlider.value;
                 contrastVal.textContent = contrastSlider.value;
                 brightVal.textContent = brightSlider.value;
                 processAndRender();
             };
         });
-
-        spacingSlider.oninput = () => {
-            const sp = parseInt(spacingSlider.value, 10);
-            spacingVal.textContent = `${sp} px`;
-            const newCols = Math.max(10, Math.min(480, Math.round(1920 / sp)));
-            colsSlider.value = newCols;
-            colsVal.textContent = newCols;
-            processAndRender();
-        };
-
-        colsSlider.oninput = () => {
-            const cols = parseInt(colsSlider.value, 10);
-            colsVal.textContent = cols;
-            const newSp = Math.max(2, Math.min(200, Math.round(1920 / cols)));
-            spacingSlider.value = newSp;
-            spacingVal.textContent = `${newSp} px`;
-            processAndRender();
-        };
 
         invertToggle.onchange = () => processAndRender();
 
@@ -2855,28 +3152,27 @@
         };
 
         document.getElementById('resetSpacing').onclick = () => {
-            spacingSlider.value = 14;
-            spacingVal.textContent = '14 px';
-            colsSlider.value = 137;
-            colsVal.textContent = '137';
-            processAndRender();
-            showToast('Character spacing reset to 14 px');
+            setSpacingX(14);
+            showToast('Horizontal spacing reset to 14 px');
         };
 
+        if (resetSpacingY) {
+            resetSpacingY.onclick = () => {
+                const charAspect = parseFloat(aspectSlider.value) || 0.46;
+                const spX = parseInt(spacingSlider.value, 10) || 14;
+                setSpacingY(Math.round(spX / charAspect));
+                showToast('Vertical spacing reset');
+            };
+        }
+
         document.getElementById('resetCols').onclick = () => {
-            colsSlider.value = 137;
-            colsVal.textContent = '137';
-            spacingSlider.value = 14;
-            spacingVal.textContent = '14 px';
-            processAndRender();
+            setCols(137);
             showToast('Columns reset to 137');
         };
 
         document.getElementById('resetAspect').onclick = () => {
-            aspectSlider.value = 0.46;
-            aspectVal.textContent = '0.46';
-            processAndRender();
-            showToast('Aspect ratio reset to 0.46');
+            setAspect(0.460);
+            showToast('Aspect ratio reset to 0.460');
         };
 
         document.getElementById('resetChars').onclick = () => {
@@ -2923,12 +3219,15 @@
         };
 
         document.getElementById('btnResetAll').onclick = () => {
-            spacingSlider.value = 14;
-            spacingVal.textContent = '14 px';
-            colsSlider.value = 137;
-            colsVal.textContent = '137';
-            aspectSlider.value = 0.46;
-            aspectVal.textContent = '0.46';
+            isAspectLinked = true;
+            if (btnLinkAspect) {
+                btnLinkAspect.classList.add('active');
+                if (linkAspectText) linkAspectText.textContent = 'Linked';
+            }
+            setAspect(0.460, false);
+            setSpacingX(14);
+            if (spacingYSlider) spacingYSlider.value = 30;
+            if (spacingYSliderInput) spacingYSliderInput.value = 30;
             palettePreset.value = 'original_solid';
             updatePalettePreview();
             bgColor.value = 'auto';
@@ -3775,6 +4074,8 @@
         function getCurrentSettings() {
             return {
                 spacing: spacingSlider.value,
+                spacingY: spacingYSlider ? spacingYSlider.value : 30,
+                aspectLinked: isAspectLinked,
                 cols: colsSlider.value,
                 aspect: aspectSlider.value,
                 fontFamily: fontFamily.value,
@@ -3798,24 +4099,25 @@
         function applySettings(cfg) {
             if (!cfg) return;
 
-            if (cfg.spacing !== undefined) {
-                spacingSlider.value = cfg.spacing;
-                spacingVal.textContent = `${cfg.spacing} px`;
-            }
-            if (cfg.cols !== undefined) {
-                colsSlider.value = cfg.cols;
-                colsVal.textContent = cfg.cols;
-                if (cfg.spacing === undefined) {
-                    const sp = Math.max(2, Math.min(200, Math.round(1920 / cfg.cols)));
-                    spacingSlider.value = sp;
-                    spacingVal.textContent = `${sp} px`;
+            if (cfg.aspectLinked !== undefined) {
+                isAspectLinked = !!cfg.aspectLinked;
+                if (btnLinkAspect) {
+                    btnLinkAspect.classList.toggle('active', isAspectLinked);
+                    if (linkAspectText) linkAspectText.textContent = isAspectLinked ? 'Linked' : 'Unlinked';
                 }
-            } else if (cfg.spacing !== undefined) {
-                const cols = Math.max(10, Math.min(480, Math.round(1920 / cfg.spacing)));
-                colsSlider.value = cols;
-                colsVal.textContent = cols;
             }
-            if (cfg.aspect !== undefined) { aspectSlider.value = cfg.aspect; aspectVal.textContent = cfg.aspect; }
+            if (cfg.aspect !== undefined) {
+                setAspect(cfg.aspect, false);
+            }
+            if (cfg.spacing !== undefined) {
+                setSpacingX(cfg.spacing);
+            }
+            if (cfg.spacingY !== undefined) {
+                setSpacingY(cfg.spacingY);
+            }
+            if (cfg.cols !== undefined && cfg.spacing === undefined) {
+                setCols(cfg.cols);
+            }
             
             if (cfg.charPreset !== undefined) {
                 charPreset.value = cfg.charPreset;
