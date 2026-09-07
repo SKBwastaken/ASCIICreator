@@ -13,7 +13,8 @@ A high-performance, standalone, client-side web application for transforming ima
 - **100% Client-Side & Private**: Runs entirely in the browser using HTML5 Canvas. Images are never uploaded to any server.
 - **Offline First**: Zero external CDN dependencies or libraries. Single, self-contained file.
 - **Cyber & Retro Aesthetics**:
-  - Color palettes including **Cyber Lime (`#C2FD04`)**, Retro Amber Terminal, Matrix Green, Commodore 64, CGA, and Custom Colors.
+  - Electric Blue (`#2974ff`) cyber accent with frosted glass UI.
+  - Color palettes including Cyber Lime, Retro Amber Terminal, Matrix Green, Commodore 64, CGA, and Custom Colors.
   - Character spacing control (2px – 200px) with bidirectional column sync for perfectly uniform grids.
   - Goliath Encrypted font support and standard monospace fonts (Consolas, Menlo, Cascadia Code).
 - **Transparency & Cutoff**:
@@ -23,7 +24,7 @@ A high-performance, standalone, client-side web application for transforming ima
   - Drag-and-drop or load **animated GIFs**, **MP4**, **WebM**, and **MOV** videos.
   - Real-time ASCII rendering at up to 60 FPS using hardware-accelerated video frames and WebCodecs `ImageDecoder`.
   - Floating frosted-glass **Media Player Bar** with Play/Pause, timeline seekbar, loop toggle, and audio controls (with Spacebar shortcut).
-  - **Export ASCII Video** directly to **WebM**.
+  - **Offline ASCII Video Export**: Frame-by-frame rendering with progress dialog (no real-time playback recording required) at up to **50 Mbps ultra bitrate** WebM.
 - **Flexible Workspace**:
   - **Sidebar Position Toggle**: Switch between **Left** and **Right** sidebar layouts with persistent browser state.
 - **High-Resolution Exports**:

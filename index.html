@@ -27,8 +27,12 @@
             --text-dim: #5c5c5c;
             --control-bg: rgba(255, 255, 255, 0.035);
             --control-border: rgba(255, 255, 255, 0.08);
+            --accent: #2974ff;
+            --accent-glow: rgba(41, 116, 255, 0.6);
+            --accent-dim: rgba(41, 116, 255, 0.15);
+            --accent-border: rgba(41, 116, 255, 0.45);
             --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
         }
 
         * {
@@ -58,8 +62,8 @@
         aside {
             width: 420px;
             background: var(--panel-glass);
-            backdrop-filter: blur(36px) saturate(140%);
-            -webkit-backdrop-filter: blur(36px) saturate(140%);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
             border-right: 1px solid var(--border-subtle);
             box-shadow: 10px 0 35px rgba(0, 0, 0, 0.7);
             display: flex;
@@ -93,7 +97,7 @@
         .header-title-box {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
         }
 
         .header h1 {
@@ -109,10 +113,14 @@
             font-size: 0.72rem;
             color: var(--text-muted);
             letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
         .header-credit a {
-            color: #C2FD04;
+            color: #2974ff;
             text-decoration: none;
             font-weight: 700;
             transition: all 0.2s ease;
@@ -121,7 +129,15 @@
         .header-credit a:hover {
             color: #ffffff;
             text-decoration: underline;
-            text-shadow: 0 0 8px rgba(194, 253, 4, 0.6);
+            text-shadow: 0 0 8px rgba(41, 116, 255, 0.6);
+        }
+
+        .header-updated {
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-left: 2px;
+            white-space: nowrap;
         }
 
         .btn-reset-all {
@@ -692,11 +708,12 @@
             -webkit-backdrop-filter: blur(28px) saturate(160%);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 30px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 18px rgba(194, 253, 4, 0.1);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 18px rgba(41, 116, 255, 0.15);
             z-index: 25;
             width: 90%;
             max-width: 480px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
         }
 
         .player-btn {
@@ -717,14 +734,14 @@
         .player-btn:hover {
             background: rgba(255, 255, 255, 0.14);
             border-color: rgba(255, 255, 255, 0.28);
-            color: #C2FD04;
+            color: #2974ff;
             transform: scale(1.06);
         }
 
         .player-btn.active {
-            color: #C2FD04;
-            border-color: rgba(194, 253, 4, 0.4);
-            background: rgba(194, 253, 4, 0.12);
+            color: #2974ff;
+            border-color: rgba(41, 116, 255, 0.45);
+            background: rgba(41, 116, 255, 0.15);
         }
 
         .player-time {
@@ -753,8 +770,8 @@
             width: 13px;
             height: 13px;
             border-radius: 50%;
-            background: #C2FD04;
-            box-shadow: 0 0 10px rgba(194, 253, 4, 0.85);
+            background: #2974ff;
+            box-shadow: 0 0 10px rgba(41, 116, 255, 0.85);
             cursor: pointer;
             transition: transform 0.15s ease;
         }
@@ -768,9 +785,68 @@
             height: 13px;
             border: none;
             border-radius: 50%;
-            background: #C2FD04;
-            box-shadow: 0 0 10px rgba(194, 253, 4, 0.85);
+            background: #2974ff;
+            box-shadow: 0 0 10px rgba(41, 116, 255, 0.85);
             cursor: pointer;
+        }
+
+        /* Offline Export Modal Overlay */
+        .export-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(4, 4, 6, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal-card {
+            background: rgba(18, 18, 24, 0.95);
+            border: 1px solid rgba(41, 116, 255, 0.35);
+            border-radius: 16px;
+            padding: 22px 26px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(41, 116, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .export-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .export-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .export-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #2974ff;
+            box-shadow: 0 0 12px rgba(41, 116, 255, 0.85);
+            transition: width 0.1s ease;
+        }
+
+        .export-modal-status {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
         }
 
         canvas#previewCanvas {
@@ -874,7 +950,8 @@
             <div class="header-title-box">
                 <h1>ASCII ART CREATOR</h1>
                 <div class="header-credit">
-                    vibe coded by <a href="https://discord.com/users/289503943409664000" target="_blank" rel="noopener noreferrer">SKB</a>
+                    <span>vibe coded by <a href="https://discord.com/users/289503943409664000" target="_blank" rel="noopener noreferrer">SKB</a></span>
+                    <span class="header-updated" id="headerUpdated" title="Last updated timestamp">(last update ...)</span>
                 </div>
             </div>
             <button class="btn-reset-all" id="btnResetAll" title="Reset all settings to default">
@@ -1256,7 +1333,7 @@
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 Copy ASCII Text to Clipboard
             </button>
-            <button class="btn btn-secondary" id="btnExportVideo" style="display: none; margin-top: 4px; border-color: rgba(194, 253, 4, 0.4); color: #C2FD04;">
+            <button class="btn btn-secondary" id="btnExportVideo" style="display: none; margin-top: 4px; border-color: rgba(41, 116, 255, 0.45); color: #2974ff;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
                 <span id="btnExportVideoText">Export ASCII Video (WebM)</span>
             </button>
@@ -1311,6 +1388,23 @@
                     <svg id="iconMute" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
                     <svg id="iconUnmute" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                 </button>
+            </div>
+
+            <!-- Offline Video Export Modal Dialog -->
+            <div class="export-modal-overlay" id="exportModalOverlay" style="display: none;">
+                <div class="export-modal-card">
+                    <div class="export-modal-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2974ff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        <span>Exporting ASCII Video (Offline Render)</span>
+                    </div>
+                    <div class="export-progress-bar">
+                        <div class="export-progress-fill" id="exportProgressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="export-modal-status" id="exportModalStatus">Rendering frame 0 / 0 (50 Mbps Ultra Bitrate)...</div>
+                    <button class="btn btn-secondary" id="btnCancelExport" style="margin-top: 8px; align-self: flex-end; padding: 6px 14px; font-size: 0.78rem;">
+                        Cancel Export
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -1696,7 +1790,7 @@
         // Mouse Drag to Pan canvas position
         viewport.addEventListener('mousedown', (e) => {
             if (!currentImage) return;
-            if (e.target.closest('button')) return;
+            if (e.target.closest('button') || e.target.closest('#mediaPlayerBar') || e.target.closest('.media-player-bar') || e.target.closest('#exportModalOverlay') || e.target.closest('input')) return;
 
             isDragging = true;
             dragStartX = e.clientX - panX;
@@ -1704,6 +1798,18 @@
             viewport.classList.add('grabbing');
             e.preventDefault();
         });
+
+        // Prevent pointer/drag events on media player bar from affecting canvas
+        if (mediaPlayerBar) {
+            ['mousedown', 'pointerdown', 'touchstart', 'mousemove', 'mouseup', 'click', 'dblclick', 'wheel'].forEach(evt => {
+                mediaPlayerBar.addEventListener(evt, (e) => e.stopPropagation());
+            });
+        }
+        if (playerSeekbar) {
+            ['mousedown', 'pointerdown', 'touchstart'].forEach(evt => {
+                playerSeekbar.addEventListener(evt, (e) => e.stopPropagation());
+            });
+        }
 
         window.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
@@ -2394,24 +2500,22 @@
             return [r, g, b];
         }
 
-        function processAndRender() {
-            if (!currentImage) return;
+        function calculateGridForSource(source) {
+            if (!source) return null;
 
-            const mWidth = currentImage.videoWidth || currentImage.naturalWidth || currentImage.width || 1920;
-            const mHeight = currentImage.videoHeight || currentImage.naturalHeight || currentImage.height || 1080;
-            if (mWidth <= 0 || mHeight <= 0) return;
+            const mWidth = source.videoWidth || source.naturalWidth || source.width || 1920;
+            const mHeight = source.videoHeight || source.naturalHeight || source.height || 1080;
+            if (mWidth <= 0 || mHeight <= 0) return null;
 
             const cols = parseInt(colsSlider.value, 10);
             const charAspect = parseFloat(aspectSlider.value);
             const imgAspect = mWidth / mHeight;
             const rows = Math.max(1, Math.round((cols * charAspect) / imgAspect));
 
-            gridInfo.textContent = `Grid: ${cols} cols × ${rows} rows (${cols * rows} chars) | Source: ${mWidth}×${mHeight}px`;
-
             sharedSampleCanvas.width = cols;
             sharedSampleCanvas.height = rows;
             
-            sharedSampleCtx.drawImage(currentImage, 0, 0, cols, rows);
+            sharedSampleCtx.drawImage(source, 0, 0, cols, rows);
             const imgData = sharedSampleCtx.getImageData(0, 0, cols, rows);
             const pixels = imgData.data;
 
@@ -2496,9 +2600,16 @@
                 colorsGrid.push(colorRow);
             }
 
-            calculatedGrid = { chars: charsGrid, colors: colorsGrid, cols, rows };
+            return { chars: charsGrid, colors: colorsGrid, cols, rows, mWidth, mHeight, imgAspect };
+        }
 
-            renderToCanvas(previewCanvas, 1920, Math.round(1920 / imgAspect), false);
+        function processAndRender() {
+            if (!currentImage) return;
+            const grid = calculateGridForSource(currentImage);
+            if (!grid) return;
+            calculatedGrid = grid;
+            gridInfo.textContent = `Grid: ${grid.cols} cols × ${grid.rows} rows (${grid.cols * grid.rows} chars) | Source: ${grid.mWidth}×${grid.mHeight}px`;
+            renderToCanvas(previewCanvas, 1920, Math.round(1920 / grid.imgAspect), false);
         }
 
         function getActiveBgColor() {
@@ -2735,9 +2846,62 @@
             };
         }
 
-        function startVideoExport() {
-            isRecording = true;
-            recordedChunks = [];
+        const exportModalOverlay = document.getElementById('exportModalOverlay');
+        const exportProgressFill = document.getElementById('exportProgressFill');
+        const exportModalStatus = document.getElementById('exportModalStatus');
+        const btnCancelExport = document.getElementById('btnCancelExport');
+
+        let cancelExportRequested = false;
+        if (btnCancelExport) {
+            btnCancelExport.onclick = () => {
+                cancelExportRequested = true;
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+            };
+        }
+
+        function showExportProgress(msg) {
+            if (exportModalOverlay) exportModalOverlay.style.display = 'flex';
+            if (exportProgressFill) exportProgressFill.style.width = '0%';
+            if (exportModalStatus) exportModalStatus.textContent = msg;
+        }
+
+        function updateExportProgress(pct, msg) {
+            if (exportProgressFill) exportProgressFill.style.width = `${pct}%`;
+            if (exportModalStatus) exportModalStatus.textContent = `${msg} (${pct}%)`;
+        }
+
+        function hideExportProgress() {
+            if (exportModalOverlay) exportModalOverlay.style.display = 'none';
+        }
+
+        async function startVideoExport() {
+            if (isRecording) return;
+            cancelExportRequested = false;
+
+            if (currentMediaMode !== 'VIDEO' && currentMediaMode !== 'GIF') {
+                alert('Please load a video or animated GIF first!');
+                return;
+            }
+
+            if (typeof MediaRecorder === 'undefined') {
+                alert('MediaRecorder is not supported in this browser. Please use Chrome, Edge, or Firefox.');
+                return;
+            }
+
+            // Stop real-time viewport playback so export runs silently & fast
+            stopPlayback();
+
+            const targetW = parseInt(exportResolutionSelect ? exportResolutionSelect.value : '1920', 10) || 1920;
+            const mWidth = currentImage.videoWidth || currentImage.naturalWidth || currentImage.width || 1920;
+            const mHeight = currentImage.videoHeight || currentImage.naturalHeight || currentImage.height || 1080;
+            const imgAspect = mWidth / mHeight;
+            const targetH = Math.round(targetW / imgAspect);
+
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = targetW;
+            exportCanvas.height = targetH;
 
             const candidateTypes = [
                 'video/webm;codecs=vp9',
@@ -2746,16 +2910,22 @@
             ];
             let chosenMime = candidateTypes.find(t => MediaRecorder.isTypeSupported(t)) || '';
 
-            const stream = previewCanvas.captureStream(30);
-            const options = chosenMime ? { mimeType: chosenMime, videoBitsPerSecond: 8000000 } : {};
+            // 30 fps
+            const targetFps = 30;
+            const stream = exportCanvas.captureStream(targetFps);
+
+            // Maximum possible ultra-high bitrate: 50,000,000 bps (50 Mbps)
+            const options = chosenMime ? { mimeType: chosenMime, videoBitsPerSecond: 50000000 } : {};
 
             try {
                 mediaRecorder = new MediaRecorder(stream, options);
             } catch (err) {
                 alert('Could not start MediaRecorder: ' + err.message);
-                isRecording = false;
                 return;
             }
+
+            recordedChunks = [];
+            isRecording = true;
 
             mediaRecorder.ondataavailable = (e) => {
                 if (e.data && e.data.size > 0) {
@@ -2765,12 +2935,10 @@
 
             mediaRecorder.onstop = () => {
                 isRecording = false;
-                if (btnExportVideoText) btnExportVideoText.textContent = 'Export ASCII Video (WebM)';
-                btnExportVideo.style.borderColor = 'rgba(194, 253, 4, 0.4)';
-                btnExportVideo.style.color = '#C2FD04';
+                hideExportProgress();
 
-                if (recordedChunks.length === 0) {
-                    showToast('Video export cancelled or empty');
+                if (cancelExportRequested || recordedChunks.length === 0) {
+                    showToast('Video export cancelled');
                     return;
                 }
 
@@ -2778,54 +2946,89 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `ASCII_Video_${Date.now()}.webm`;
+                a.download = `ASCII_Video_${targetW}p_${Date.now()}.webm`;
                 a.click();
                 setTimeout(() => URL.revokeObjectURL(url), 20000);
-                showToast('ASCII Video (WebM) exported successfully!');
+                showToast(`ASCII Video (${targetW}p, 50 Mbps) exported successfully!`);
             };
 
-            if (btnExportVideoText) btnExportVideoText.textContent = 'Recording... (Click to Stop)';
-            btnExportVideo.style.borderColor = '#ff4444';
-            btnExportVideo.style.color = '#ff4444';
-            showToast('Recording ASCII video... Playback running');
-
+            showExportProgress('Initializing frame rendering...');
             mediaRecorder.start(100);
 
-            if (currentMediaMode === 'VIDEO' && currentVideo) {
-                const origLoop = currentVideo.loop;
-                currentVideo.loop = false;
-                currentVideo.currentTime = 0;
-                currentVideo.play().then(() => {
-                    isPlaying = true;
-                    updatePlayPauseIcon(true);
-                    startVideoPlaybackLoop();
-                }).catch(e => console.warn(e));
+            if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
+                const totalFrames = gifFrames.length;
+                for (let i = 0; i < totalFrames; i++) {
+                    if (cancelExportRequested) break;
+                    const frameImg = gifFrames[i].canvas;
+                    const frameGrid = calculateGridForSource(frameImg);
+                    if (frameGrid) {
+                        calculatedGrid = frameGrid;
+                        renderToCanvas(exportCanvas, targetW, targetH, true);
+                        renderToCanvas(previewCanvas, 1920, Math.round(1920 / imgAspect), false);
+                    }
 
-                const handleEnd = () => {
-                    currentVideo.removeEventListener('ended', handleEnd);
-                    currentVideo.loop = origLoop;
-                    setTimeout(() => {
-                        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                            mediaRecorder.stop();
-                        }
-                    }, 250);
-                };
-                currentVideo.addEventListener('ended', handleEnd);
+                    const pct = Math.round(((i + 1) / totalFrames) * 100);
+                    updateExportProgress(pct, `Exporting Frame ${i + 1} / ${totalFrames}`);
 
-            } else if (currentMediaMode === 'GIF' && gifFrames.length > 0) {
-                gifCurrentFrame = 0;
-                isPlaying = true;
-                updatePlayPauseIcon(true);
-                startGifPlaybackLoop();
-
-                let totalDurationMs = gifFrames.reduce((acc, f) => acc + (f.duration || 100), 0);
-                totalDurationMs = Math.max(2000, Math.min(30000, totalDurationMs));
+                    const delay = Math.min(gifFrames[i].duration || 50, 40);
+                    await new Promise(r => setTimeout(r, delay));
+                }
 
                 setTimeout(() => {
                     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                         mediaRecorder.stop();
                     }
-                }, totalDurationMs + 200);
+                }, 300);
+
+            } else if (currentMediaMode === 'VIDEO' && currentVideo) {
+                const duration = currentVideo.duration || 1;
+                const totalFrames = Math.max(1, Math.floor(duration * targetFps));
+                const origTime = currentVideo.currentTime;
+                const origMuted = currentVideo.muted;
+
+                currentVideo.muted = true;
+                currentVideo.pause();
+
+                for (let f = 0; f < totalFrames; f++) {
+                    if (cancelExportRequested) break;
+                    const targetTime = Math.min(duration, f / targetFps);
+
+                    await new Promise((resolve) => {
+                        let timeout = setTimeout(() => {
+                            currentVideo.removeEventListener('seeked', onSeeked);
+                            resolve();
+                        }, 600);
+
+                        function onSeeked() {
+                            clearTimeout(timeout);
+                            currentVideo.removeEventListener('seeked', onSeeked);
+                            resolve();
+                        }
+                        currentVideo.addEventListener('seeked', onSeeked);
+                        currentVideo.currentTime = targetTime;
+                    });
+
+                    const frameGrid = calculateGridForSource(currentVideo);
+                    if (frameGrid) {
+                        calculatedGrid = frameGrid;
+                        renderToCanvas(exportCanvas, targetW, targetH, true);
+                        renderToCanvas(previewCanvas, 1920, Math.round(1920 / imgAspect), false);
+                    }
+
+                    const pct = Math.round(((f + 1) / totalFrames) * 100);
+                    updateExportProgress(pct, `Exporting Frame ${f + 1} / ${totalFrames} (${formatTime(targetTime)} / ${formatTime(duration)})`);
+
+                    await new Promise(r => setTimeout(r, 25));
+                }
+
+                currentVideo.currentTime = origTime;
+                currentVideo.muted = origMuted;
+
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                }, 350);
             }
         }
 
@@ -3113,10 +3316,39 @@
             };
         }
 
+        // Dynamic "last update [x ago]" timestamp updater
+        function updateLastUpdatedLabel() {
+            const el = document.getElementById('headerUpdated');
+            if (!el) return;
+
+            let updateTime = new Date('2026-09-07T19:15:00+02:00').getTime();
+            if (document.lastModified) {
+                const d = new Date(document.lastModified).getTime();
+                if (!isNaN(d) && d > 1000) updateTime = d;
+            }
+
+            const diffSec = Math.max(0, Math.floor((Date.now() - updateTime) / 1000));
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHours = Math.floor(diffMin / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            let str = 'just now';
+            if (diffDays > 1) str = `${diffDays} days ago`;
+            else if (diffDays === 1) str = `1 day ago`;
+            else if (diffHours > 1) str = `${diffHours} hours ago`;
+            else if (diffHours === 1) str = `1 hour ago`;
+            else if (diffMin > 1) str = `${diffMin} minutes ago`;
+            else if (diffMin === 1) str = `1 minute ago`;
+
+            el.textContent = `(last update ${str})`;
+        }
+
         // Initialize user presets on page load
         refreshUserPresetsDropdown();
         updateCheckerboardState();
         initSidebarPosition();
+        updateLastUpdatedLabel();
+        setInterval(updateLastUpdatedLabel, 30000);
 
     </script>
 </body>
