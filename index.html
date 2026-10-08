@@ -1534,17 +1534,17 @@
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                             </svg>
-                            <span id="presetDeleteTitle">Preset löschen?</span>
+                            <span id="presetDeleteTitle">Delete Preset?</span>
                         </div>
                         <p id="presetDeleteMessage" style="font-size: 0.74rem; color: var(--text-muted); margin: 6px 0 12px 0; line-height: 1.35; text-align: center; word-break: break-word;">
-                            Möchtest du dieses Preset wirklich löschen?
+                            Are you sure you want to delete this preset?
                         </p>
                         <div style="display: flex; gap: 8px; justify-content: center; width: 100%;">
                             <button type="button" class="btn btn-secondary" id="btnCancelDeletePreset" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center;">
-                                Canceln
+                                Cancel
                             </button>
                             <button type="button" class="btn btn-danger-red" id="btnConfirmDeletePreset" style="flex: 1; padding: 6px 10px; font-size: 0.76rem; justify-content: center;">
-                                Löschen
+                                Delete
                             </button>
                         </div>
                     </div>
@@ -1996,6 +1996,63 @@
                 </div>
             </div>
 
+            <!-- CRT Phosphor Glow & Bloom (Experimental) -->
+            <div class="glass-card" id="glowControlCard">
+                <div class="card-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    CRT Glow & Phosphor Bloom
+                </div>
+
+                <div class="toggle-row">
+                    <label for="enableGlowToggle">Enable Glow Effect</label>
+                    <label class="switch">
+                        <input type="checkbox" id="enableGlowToggle">
+                        <span class="slider-switch"></span>
+                    </label>
+                </div>
+
+                <div id="glowSettingsContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 4px;">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Glow Radius</span>
+                            <div class="label-meta">
+                                <span class="control-value" id="glowRadiusVal">12 px</span>
+                                <button class="btn-reset-mini" id="resetGlowRadius" title="Default: 12 px">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                        <input type="range" id="glowRadiusSlider" min="2" max="40" value="12" step="1">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Glow Intensity</span>
+                            <div class="label-meta">
+                                <span class="control-value" id="glowIntensityVal">65%</span>
+                                <button class="btn-reset-mini" id="resetGlowIntensity" title="Default: 65%">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                        <input type="range" id="glowIntensitySlider" min="10" max="150" value="65" step="5">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Blend Mode</span>
+                        </div>
+                        <select id="glowBlendModeSelect">
+                            <option value="screen" selected>Screen (CRT Phosphor Halo)</option>
+                            <option value="lighter">Lighter / Additive (Analog Beam)</option>
+                            <option value="color-dodge">Color Dodge (Intense Core Glow)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Video Settings & Frame Skip (Visible when Video is loaded) -->
             <div class="glass-card" id="videoSettingsCard" style="display: none;">
                 <div class="card-header">
@@ -2016,18 +2073,18 @@
                     </div>
                     <input type="range" id="videoFrameSkipSlider" min="0" max="15" value="0" step="1">
                     <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 2px;">
-                        <span>0 (Jeder Frame)</span>
+                        <span>0 (Every frame)</span>
                         <span>7 Frames</span>
                         <span>15 Frames</span>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 4px;">
-                    <button class="btn btn-secondary" id="btnSkipPrevFrames" style="flex: 1; padding: 6px 8px; font-size: 11px; justify-content: center;" title="x Frames zurückspringen">
+                    <button class="btn btn-secondary" id="btnSkipPrevFrames" style="flex: 1; padding: 6px 8px; font-size: 11px; justify-content: center;" title="Step frames backward">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 19 2 12 11 5"/><polyline points="22 19 13 12 22 5"/></svg>
                         <span id="btnSkipPrevText">-1 Frame</span>
                     </button>
-                    <button class="btn btn-secondary" id="btnSkipNextFrames" style="flex: 1; padding: 6px 8px; font-size: 11px; justify-content: center;" title="x Frames vorspringen">
+                    <button class="btn btn-secondary" id="btnSkipNextFrames" style="flex: 1; padding: 6px 8px; font-size: 11px; justify-content: center;" title="Step frames forward">
                         <span id="btnSkipNextText">+1 Frame</span>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 19 22 12 13 5"/><polyline points="2 19 11 12 2 5"/></svg>
                     </button>
@@ -2142,9 +2199,9 @@
                                 <span>Changelog</span>
                             </div>
                             <div class="changelog-meta">
-                                <a href="https://github.com/SKBwastaken/ASCIICreator" target="_blank" rel="noopener noreferrer" class="changelog-build-badge" title="Open repository on GitHub">Build 2026.09.07.2</a>
+                                <a href="https://github.com/SKBwastaken/ASCIICreator" target="_blank" rel="noopener noreferrer" class="changelog-build-badge" title="Open repository on GitHub">Build 2026.10.08</a>
                                 <span>•</span>
-                                <span>September 8, 2026 • 00:05 UTC+2</span>
+                                <span>October 8, 2026 • 16:15 UTC+2</span>
                             </div>
                         </div>
                         <button class="changelog-close-btn" id="btnCloseChangelog" title="Close">
@@ -2153,11 +2210,36 @@
                     </div>
 
                     <div class="changelog-body">
+                        <!-- v1.6.3 (Patch) -->
+                        <div class="changelog-version-block">
+                            <div class="changelog-version-tag">
+                                <span>Version 1.6.3</span>
+                                <span class="badge-latest">Latest Update</span>
+                            </div>
+                            <div class="changelog-list">
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">English Localization Harmonization</span>
+                                        <span class="changelog-item-desc">Fully localized preset deletion dialogs, toast notifications, and video frame skip controls to English for a cohesive interface.</span>
+                                    </div>
+                                </div>
+                                <div class="changelog-item">
+                                    <span class="changelog-bullet"></span>
+                                    <div class="changelog-item-content">
+                                        <span class="changelog-item-title">CRT Phosphor Glow & Bloom</span>
+                                        <span class="changelog-item-desc">Integrated real-time CRT phosphor bloom effect with customizable blur radius, intensity, and blend modes for high-resolution ASCII rendering.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="changelog-divider"></div>
+
                         <!-- v1.6.2 (Patch) -->
                         <div class="changelog-version-block">
                             <div class="changelog-version-tag">
                                 <span>Version 1.6.2</span>
-                                <span class="badge-latest">Latest Update</span>
                             </div>
                             <div class="changelog-list">
                                 <div class="changelog-item">
@@ -2171,7 +2253,7 @@
                                     <span class="changelog-bullet"></span>
                                     <div class="changelog-item-content">
                                         <span class="changelog-item-title">Scoped Preset Delete Confirmation Dialog</span>
-                                        <span class="changelog-item-desc">Deleting a saved preset now triggers a contained, non-intrusive card overlay directly over the Presets category card with "Canceln" and a prominent red "Löschen" button, replacing intrusive browser popups without dimming the entire screen.</span>
+                                        <span class="changelog-item-desc">Deleting a saved preset now triggers a contained, non-intrusive card overlay directly over the Presets category card with "Cancel" and a prominent red "Delete" button, replacing intrusive browser popups without dimming the entire screen.</span>
                                     </div>
                                 </div>
                                 <div class="changelog-item">
@@ -2655,6 +2737,23 @@
         const btnLoadExample = document.getElementById('btnLoadExample');
         const btnToggleAscii = document.getElementById('btnToggleAscii');
         const asciiToggleText = document.getElementById('asciiToggleText');
+
+        // CRT Phosphor Glow Controls
+        const enableGlowToggle = document.getElementById('enableGlowToggle');
+        const glowSettingsContainer = document.getElementById('glowSettingsContainer');
+        const glowRadiusSlider = document.getElementById('glowRadiusSlider');
+        const glowRadiusVal = document.getElementById('glowRadiusVal');
+        const resetGlowRadius = document.getElementById('resetGlowRadius');
+        const glowIntensitySlider = document.getElementById('glowIntensitySlider');
+        const glowIntensityVal = document.getElementById('glowIntensityVal');
+        const resetGlowIntensity = document.getElementById('resetGlowIntensity');
+        const glowBlendModeSelect = document.getElementById('glowBlendModeSelect');
+
+        let isGlowEnabled = false;
+        let glowRadius = 12;
+        let glowIntensity = 0.65;
+        let glowBlendMode = 'screen';
+        let offscreenGlowCanvas = null;
 
         const videoSettingsCard = document.getElementById('videoSettingsCard');
         const videoFrameSkipSlider = document.getElementById('videoFrameSkipSlider');
@@ -4177,9 +4276,22 @@
             const scale = (parseInt(symbolScaleSlider ? symbolScaleSlider.value : 100, 10) || 100) / 100;
             const fontSize = Math.max(2, Math.round(cellH * 0.92 * scale));
 
-            ctx.font = `${fontSize}px ${getEffectiveFont()}`;
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = 'center';
+            const useGlow = isGlowEnabled && (glowIntensity > 0) && (glowRadius > 0);
+            let drawCtx = ctx;
+
+            if (useGlow) {
+                if (!offscreenGlowCanvas) {
+                    offscreenGlowCanvas = document.createElement('canvas');
+                }
+                offscreenGlowCanvas.width = targetW;
+                offscreenGlowCanvas.height = targetH;
+                drawCtx = offscreenGlowCanvas.getContext('2d');
+                drawCtx.clearRect(0, 0, targetW, targetH);
+            }
+
+            drawCtx.font = `${fontSize}px ${getEffectiveFont()}`;
+            drawCtx.textBaseline = 'middle';
+            drawCtx.textAlign = 'center';
 
             for (let r = 0; r < rows; r++) {
                 const yCenter = (r + 0.5) * cellH;
@@ -4187,10 +4299,35 @@
                     const ch = chars[r][c];
                     if (!ch || ch === ' ') continue;
 
-                    ctx.fillStyle = colors[r][c];
+                    drawCtx.fillStyle = colors[r][c];
                     const xCenter = (c + 0.5) * cellW;
-                    ctx.fillText(ch, xCenter, yCenter);
+                    drawCtx.fillText(ch, xCenter, yCenter);
                 }
+            }
+
+            if (useGlow) {
+                // 1. Draw sharp ASCII glyphs on top of background
+                ctx.drawImage(offscreenGlowCanvas, 0, 0);
+
+                // 2. Composite Gaussian bloom
+                ctx.save();
+                ctx.globalCompositeOperation = glowBlendMode;
+
+                // Scale blur radius proportionally if exporting at high resolutions (e.g. 4K)
+                const resScale = targetW / 1920;
+                const effectiveRadius = Math.max(1, Math.round(glowRadius * resScale));
+
+                ctx.filter = `blur(${effectiveRadius}px)`;
+                ctx.globalAlpha = glowIntensity;
+                ctx.drawImage(offscreenGlowCanvas, 0, 0);
+
+                // Second deeper bloom pass
+                if (effectiveRadius > 5) {
+                    ctx.filter = `blur(${Math.round(effectiveRadius * 2.2)}px)`;
+                    ctx.globalAlpha = glowIntensity * 0.45;
+                    ctx.drawImage(offscreenGlowCanvas, 0, 0);
+                }
+                ctx.restore();
             }
         }
 
@@ -4498,6 +4635,59 @@
                     iconUnmute.style.display = currentVideo.muted ? 'none' : 'block';
                 }
                 showToast(currentVideo.muted ? 'Audio muted' : 'Audio unmuted');
+            };
+        }
+
+        // Glow Event Listeners
+        if (enableGlowToggle) {
+            enableGlowToggle.onchange = () => {
+                isGlowEnabled = enableGlowToggle.checked;
+                if (glowSettingsContainer) {
+                    glowSettingsContainer.style.display = isGlowEnabled ? 'flex' : 'none';
+                }
+                processAndRender();
+            };
+        }
+
+        if (glowRadiusSlider) {
+            glowRadiusSlider.oninput = () => {
+                glowRadius = parseInt(glowRadiusSlider.value, 10) || 12;
+                if (glowRadiusVal) glowRadiusVal.textContent = glowRadius + ' px';
+                processAndRender();
+            };
+        }
+
+        if (resetGlowRadius) {
+            resetGlowRadius.onclick = () => {
+                glowRadius = 12;
+                if (glowRadiusSlider) glowRadiusSlider.value = 12;
+                if (glowRadiusVal) glowRadiusVal.textContent = '12 px';
+                processAndRender();
+            };
+        }
+
+        if (glowIntensitySlider) {
+            glowIntensitySlider.oninput = () => {
+                const val = parseInt(glowIntensitySlider.value, 10) || 65;
+                glowIntensity = val / 100;
+                if (glowIntensityVal) glowIntensityVal.textContent = val + '%';
+                processAndRender();
+            };
+        }
+
+        if (resetGlowIntensity) {
+            resetGlowIntensity.onclick = () => {
+                glowIntensity = 0.65;
+                if (glowIntensitySlider) glowIntensitySlider.value = 65;
+                if (glowIntensityVal) glowIntensityVal.textContent = '65%';
+                processAndRender();
+            };
+        }
+
+        if (glowBlendModeSelect) {
+            glowBlendModeSelect.onchange = () => {
+                glowBlendMode = glowBlendModeSelect.value;
+                processAndRender();
             };
         }
 
@@ -5000,12 +5190,36 @@
                 bwSymbolMode: bwSymbolMode ? bwSymbolMode.value : 'solid',
                 bgColor: bgColor.value,
                 checkerboard: checkerboardEnabled,
-                symbolScale: symbolScaleSlider ? parseInt(symbolScaleSlider.value, 10) : 100
+                symbolScale: symbolScaleSlider ? parseInt(symbolScaleSlider.value, 10) : 100,
+                glow: isGlowEnabled,
+                glowRadius: glowRadius,
+                glowIntensity: glowIntensity,
+                glowBlendMode: glowBlendMode
             };
         }
 
         function applySettings(cfg) {
             if (!cfg) return;
+
+            if (cfg.glow !== undefined) {
+                isGlowEnabled = !!cfg.glow;
+                if (enableGlowToggle) enableGlowToggle.checked = isGlowEnabled;
+                if (glowSettingsContainer) glowSettingsContainer.style.display = isGlowEnabled ? 'flex' : 'none';
+            }
+            if (cfg.glowRadius !== undefined) {
+                glowRadius = cfg.glowRadius;
+                if (glowRadiusSlider) glowRadiusSlider.value = glowRadius;
+                if (glowRadiusVal) glowRadiusVal.textContent = glowRadius + ' px';
+            }
+            if (cfg.glowIntensity !== undefined) {
+                glowIntensity = cfg.glowIntensity;
+                if (glowIntensitySlider) glowIntensitySlider.value = Math.round(glowIntensity * 100);
+                if (glowIntensityVal) glowIntensityVal.textContent = Math.round(glowIntensity * 100) + '%';
+            }
+            if (cfg.glowBlendMode !== undefined) {
+                glowBlendMode = cfg.glowBlendMode;
+                if (glowBlendModeSelect) glowBlendModeSelect.value = glowBlendMode;
+            }
 
             if (cfg.aspectLinked !== undefined) {
                 isAspectLinked = !!cfg.aspectLinked;
@@ -5158,8 +5372,8 @@
 
         function showPresetDeleteDialog(name, onConfirm) {
             if (!presetDeleteOverlay) return;
-            if (presetDeleteTitle) presetDeleteTitle.textContent = 'Preset löschen?';
-            if (presetDeleteMessage) presetDeleteMessage.textContent = `Möchtest du das Preset "${name}" wirklich löschen?`;
+            if (presetDeleteTitle) presetDeleteTitle.textContent = 'Delete Preset?';
+            if (presetDeleteMessage) presetDeleteMessage.textContent = `Are you sure you want to delete preset "${name}"?`;
 
             activeDeletePresetCallback = onConfirm;
             presetDeleteOverlay.style.display = 'flex';
@@ -5203,7 +5417,7 @@
 
                     presetSelect.value = '';
                     btnDeletePreset.style.display = 'none';
-                    showToast(`Preset "${name}" gelöscht`);
+                    showToast(`Preset "${name}" deleted`);
                 });
             };
         }
@@ -5315,7 +5529,7 @@
             const el = document.getElementById('headerUpdated');
             if (!el) return;
 
-            let updateTime = new Date('2026-09-07T23:35:00+02:00').getTime();
+            let updateTime = new Date('2026-10-08T16:15:00+02:00').getTime();
             if (document.lastModified) {
                 const d = new Date(document.lastModified).getTime();
                 if (!isNaN(d) && d > 1000) updateTime = d;
@@ -5340,7 +5554,7 @@
         // -------------------------------------------------------------
         // CHANGELOG / WHAT'S NEW MODAL LOGIC
         // -------------------------------------------------------------
-        const CURRENT_CHANGELOG_BUILD = '2026-09-08-v1.6.2';
+        const CURRENT_CHANGELOG_BUILD = '2026-10-08-v1.6.3';
         const changelogModalOverlay = document.getElementById('changelogModalOverlay');
         const btnCloseChangelog = document.getElementById('btnCloseChangelog');
         const btnConfirmChangelog = document.getElementById('btnConfirmChangelog');

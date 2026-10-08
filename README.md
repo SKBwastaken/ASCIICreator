@@ -23,6 +23,7 @@ Live Demo: https://skbwastaken.github.io/ASCIICreator/
   - Color palettes: Pure Black & White, Original (Solid & Average), Monochrome, Matrix Green, Cyberpunk, CGA, ZX Spectrum, and Custom Colors.
   - Custom font support (.ttf, .otf, .woff, Goliath Encrypted, and system monospace fonts).
   - Background transparency cutoff and shadow fill controls.
+  - CRT Phosphor Glow & Bloom: Real-time Gaussian phosphor bloom with configurable radius, intensity, and blend modes.
 - **Flexible Workspace**:
   - Sidebar position toggle (Left / Right) with persistent preference storage.
   - Canvas pan and cursor-centered zoom.
