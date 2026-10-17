@@ -1,1 +1,5 @@
-Push_To_GitHub.bat
+.DS_Store
+Thumbs.db
+desktop.ini
+*:Zone.Identifier
+*.log
